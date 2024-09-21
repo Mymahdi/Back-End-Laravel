@@ -22,7 +22,6 @@ class CreateBlogsTable extends Migration
             $table->integer('num_likes')->default(0); 
             $table->integer('num_tags')->default(0);  
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -8,3 +8,7 @@ use App\Http\Controllers\BlogController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/createBlog', [BlogController::class, 'create']);
+
+// Route::middleware('auth.token')->group(function () {
+//     Route::post('/createBlog', [BlogController::class, 'create']);
+// });

@@ -25,6 +25,34 @@ class AuthController extends Controller
         ], 201);
     }
 
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required|string|min:6',
+        ]);
+        
+        $user = DB::table('users')->where('email', $request->email)->first();
+        
+        if ($user && Hash::check($request->password, $user->password)) {
+            
+            $token = bin2hex(random_bytes(40));
+            
+            DB::table('user_tokens')->insert([
+                'user_id'    => $user->id,
+                'token'      => hash('sha256', $token), 
+                'created_at' => now(),
+                'expires_at' => now()->addMinutes(20),
+            ]);
+
+            return response()->json([
+                'message' => 'Login successful',
+                'token'   => $token,
+            ], 200);
+        }
+
+        return response()->json(['error' => 'Invalid username or password!'], 401);
+    }
 
     
 }

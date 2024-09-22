@@ -12,6 +12,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware([AuthenticateToken::class])->group(function () {
     Route::post('/createBlog', [BlogController::class, 'create']);
+    Route::get('/allPosts', [BlogController::class, 'getAllPosts']);
+    Route::get('/userPosts', [BlogController::class, 'getUserBlogs']);
     Route::post('/editBlog/{id}', [BlogController::class, 'edit']);
-    Route::get('/deletePost/{id}', [BlogController::class, 'deletePost']);
+    Route::delete('/deletePost/{id}', [BlogController::class, 'deletePost']);
 });

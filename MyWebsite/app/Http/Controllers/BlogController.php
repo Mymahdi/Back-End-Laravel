@@ -91,5 +91,31 @@ public function deletePost($id)
     return response()->json(['message' => 'Post deleted successfully.']);
 }
 
+public function getAllPosts()
+{
+    $posts = DB::table('blogs')->get();
+
+    // return $posts;
+
+    if ($posts->isEmpty()) {
+        return response()->json(['message' => 'No posts found.'], 404);
+    }
+
+    return response()->json($posts);
+}
+
+
+public function getUserBlogs(Request $request)
+{
+    $userId = $request->user_id;
+    $userBlogs = DB::table('blogs')->where('user_id', $userId)->get();
+
+    if ($userBlogs->isEmpty()) {
+        return response()->json(['message' => 'No blogs found for this user.'], 404);
+    }
+
+    return response()->json($userBlogs);
+}
+
 
 }

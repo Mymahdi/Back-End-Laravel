@@ -52,28 +52,23 @@ class AuthController extends Controller
         return response()->json(['error' => 'Invalid username or password!'], 401);
     }
 
-    // public function logout(Request $request)
-    // {
-    //     $token = $request->header('Authorization');
+    public function logout(Request $request)
+    {
+        $token = $request->header('Authorization');
          
-    //     return $token;
-    //     if (!$token) {
-    //         return response()->json(['error' => 'Token not provided.'], 401);
-    //     }
-    
-    //     // Remove the 'Bearer ' prefix
-    //     $token = str_replace('Bearer ', '', $token);
-    
-    //     // Delete the token from the database
-    //     $deleted = DB::table('user_tokens')->where('token', $token)->delete();
-    
-    //     // Check if the token was successfully deleted
-    //     if ($deleted) {
-    //         return response()->json(['message' => 'Logged out successfully.']);
-    //     } else {
-    //         return response()->json(['error' => 'Token not found.'], 404);
-    //     }
-    // }
+        if (!$token) {
+            return response()->json(['error' => 'Token not provided.'], 401);
+        }
+        $token = str_replace('Bearer ', '', $token);
+        
+        $deleted = DB::table('user_tokens')->where('token', $token)->delete();
+        
+        if ($deleted) {
+            return response()->json(['message' => 'Logged out successfully.']);
+        } else {
+            return response()->json(['error' => 'Token not found.'], 404);
+        }
+    }
     
 
     

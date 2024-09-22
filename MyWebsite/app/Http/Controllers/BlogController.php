@@ -79,4 +79,17 @@ class BlogController extends Controller
     return response()->json(['error' => 'Token not provided try again.'], 401);
 }
 
+public function deletePost($id)
+{
+    $post = DB::table('blogs')->where('id', $id)->first();
+    if (!$post) {
+        return response()->json(['error' => 'Post not found.'], 404);
+    }
+
+    DB::table('blogs')->where('id', $id)->delete();
+
+    return response()->json(['message' => 'Post deleted successfully.']);
+}
+
+
 }

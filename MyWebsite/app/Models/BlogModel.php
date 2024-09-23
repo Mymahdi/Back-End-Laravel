@@ -62,4 +62,25 @@ class BlogModel extends Model
         ->orWhere('author_name', 'LIKE', '%' . $authorTerm . '%')
         ->get();
     }
+
+    public static function tagExists($tagName)
+    {
+        $tag = DB::table('tags')->where('name', $tagName)->first();
+        if ($tag) {
+            return $tag->id;
+        }
+        return false;
+    }
+    public static function addNewTag($tagName)
+    {
+        return DB::table('tags')->insertGetId(['name' => $tagName,]);
+    }
+    
+    public static function recordTagBlog($blogId,$tagId)
+    {
+        DB::table('tags_blogs')->insert([
+            'tag_id' => $tagId,
+            'blog_id' => $blogId,
+        ]);
+    }
 }

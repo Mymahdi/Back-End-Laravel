@@ -19,31 +19,52 @@ class BlogController extends Controller
     public function create(Request $request)
     {
 
-        $token = $request->header('Authorization');
-        
-        if (!$token) {
-        return response()->json(['error' => 'Token not provided.'], 401);
-    }
-        $token = str_replace('Bearer ', '', $token);
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string|max:1000',
             'authorName' => 'required|string|max:255',
+            'tags' => 'nullable|string|max:255',
         ]);
-        $blog = DB::table('blogs')->insert([
+        
+        $tagsArray = array_unique(explode(',', $request['tags']));
+        $newBlogId = DB::table('blogs')->insertGetId([
             'title' => $validated['title'],
             'body' => $validated['body'],
             'author_name' => $validated['authorName'],
             'user_id' =>  $request->user_id,
+            'num_tags' =>  count($tagsArray),
         ]);
-        
-        if ($blog) {
+        // $this->addTagsToBlog($tagsArray, $newBlogId);
+        foreach ($tagsArray as $tagName) {
+            $tagId = BlogModel::tagExists($tagName);
+            
+            if (!$tagId) {
+                $tagId = BlogModel::addNewTag($tagName);
+            }
+            BlogModel::recordTagBlog($newBlogId,$tagId);
+        }
+
+        if ($newBlogId) {
             return response()->json(['message' => 'Blog created successfully'], 201);
         } else {
             return response()->json(['error' => 'Failed to create blog'], 500);
         }
     }
 
+
+    public function addTagsToBlog($tags, $blogId)
+    {
+        
+        return $tags;
+        foreach ($tags as $tagName) {
+            $tagId = BlogModel::tagExists($tagName);
+            
+            if (!$tagId) {
+                $tagId = BlogModel::addNewTag($tagName);
+            }
+        BlogModell::recordTagBlog($blogId,$tagId);
+        }
+    }
 
     public function edit(Request $request, $id)
 {
@@ -95,12 +116,9 @@ public function deletePost($id)
 public function getAllPosts()
 {
     $posts = DB::table('blogs')->get();
-
-
     if ($posts->isEmpty()) {
         return response()->json(['message' => 'No posts found.'], 404);
     }
-
     return response()->json($posts);
 }
 

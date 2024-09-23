@@ -146,4 +146,22 @@ public function unlikeBlog($id, Request $request)
         return response()->json(['message' => 'Post unliked successfully!'], 200);
     }
 
+    public function searchBlogs(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'nullable|string|max:255',
+            'body' => 'nullable|string|max:1000',
+            'authorName' => 'nullable|string|max:255',
+        ]);
+
+        $titleTerm = '%' . ($request->query('title') ?? '') . '%';
+        $bodyTerm = '%' . ($request->query('body') ?? '') . '%';
+        $authorTerm = '%' . ($request->query('authorName') ?? '') . '%';
+        
+        $blogs = BlogModel::findBlogs($titleTerm,$bodyTerm,$authorTerm);
+
+    return response()->json($blogs);
+}
+
+
 }

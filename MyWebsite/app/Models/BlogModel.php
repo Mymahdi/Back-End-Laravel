@@ -45,11 +45,21 @@ class BlogModel extends Model
         DB::table('blogs')
             ->where('id', $blogId)
             ->increment('num_likes', 1);
-        }
+    }
+    
     public static function decreaseNumLike($blogId)
     {
         DB::table('blogs')
             ->where('id', $blogId)
             ->decrement('num_likes');
-        }
+    }
+    
+    public static function findBlogs($titleTerm,$bodyTerm,$authorTerm)
+    {
+        return DB::table('blogs')
+        ->where('title', 'LIKE', '%' . $titleTerm . '%')
+        ->orWhere('body', 'LIKE', '%' . $bodyTerm . '%')
+        ->orWhere('author_name', 'LIKE', '%' . $authorTerm . '%')
+        ->get();
+    }
 }

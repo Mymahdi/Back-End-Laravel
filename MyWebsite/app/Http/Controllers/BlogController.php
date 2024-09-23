@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Middleware\AuthenticateToken;
+use App\Models\BlogModel;
 
 class BlogController extends Controller
 {
@@ -95,7 +96,6 @@ public function getAllPosts()
 {
     $posts = DB::table('blogs')->get();
 
-    // return $posts;
 
     if ($posts->isEmpty()) {
         return response()->json(['message' => 'No posts found.'], 404);
@@ -117,5 +117,33 @@ public function getUserBlogs(Request $request)
     return response()->json($userBlogs);
 }
 
+public function likeBlog($id, Request $request)
+    {
+        $userId = $request->user_id;
+
+        $alreadyLiked = BlogModel:: userLikedBlog($userId,$id);
+        
+        if ($alreadyLiked) {
+            return response()->json(['message' => 'You have already liked this post'], 400);
+        }
+        
+        BlogModel:: recordLike($userId,$id);
+        BlogModel:: increaseNumLike($id);
+        return response()->json(['message' => 'Post liked successfully!'], 200);
+    }
+
+public function unlikeBlog($id, Request $request)
+    {
+        $userId = $request->user_id;
+        $alreadyLiked = BlogModel:: userLikedBlog($userId,$id);
+        
+        if (!$alreadyLiked) {
+            return response()->json(['message' => 'You have not liked this post before'], 400);
+        }
+        
+        BlogModel:: removeLike($userId,$id);
+        BlogModel:: decreaseNumLike($id);
+        return response()->json(['message' => 'Post unliked successfully!'], 200);
+    }
 
 }

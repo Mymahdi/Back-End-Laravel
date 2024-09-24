@@ -35,6 +35,15 @@ class BlogModel
         return DB::table('blogs')->where('id', $id)->first();
     }
 
+    public static function returnTagsList()
+    {
+        return DB::table('tags')
+        ->leftJoin('tags_blogs', 'tags.id', '=', 'tags_blogs.tag_id')
+        ->select('tags.name','tags.id', DB::raw('COUNT(tags_blogs.blog_id) as blog_count'))
+        ->groupBy('tags.id', 'tags.name')
+        ->get();
+    }
+
     public static function userLikedBlog($userId,$id)
     {
         return DB::table('likes')->where('user_id', $userId)->where('blog_id', $id)->exists();

@@ -22,6 +22,8 @@ Route::middleware([AuthenticateToken::class])->group(function () {
     Route::delete('/deletePost/{id}', [BlogController::class, 'deletePost']);
     
     Route::get('/blog-likers/{id}', [BlogController::class, 'getLikers']);
+    Route::get('/tags-list', [BlogController::class, 'getTagsList']);
+
     Route::post('/likeBlog/{id}', [BlogController::class, 'likeBlog']);
     Route::delete('/unlikeBlog/{id}', [BlogController::class, 'unlikeBlog']);
     Route::get('/serachBlog', [BlogController::class, 'searchBlogs']);

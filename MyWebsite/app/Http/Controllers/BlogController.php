@@ -173,6 +173,13 @@ public function unlikeBlog($id, Request $request)
         return response()->json($likers, 200);
     }
     
-
-
+    public function getTagsList()
+    {
+        $tags = BlogModel::returnTagsList();
+        if ($tags->isEmpty()) {
+            return response()->json(['message' => 'No Tags Found.'], 404);
+        }
+        return response()->json($tags);
+    }
+    
 }

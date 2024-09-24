@@ -18,15 +18,14 @@ Route::middleware([AuthenticateToken::class])->group(function () {
     Route::get('/allPosts', [BlogController::class, 'getAllPosts']);
     Route::get('/userPosts', [BlogController::class, 'getUserBlogs']);
     
-    // Route::put('/editBlog/{id}', [BlogController::class, 'edit']);
-    Route::get('/likeBlog/{id}', [BlogController::class, 'likeBlog']);
+    Route::put('/editBlog/{id}', [BlogController::class, 'edit']);
+    Route::post('/likeBlog/{id}', [BlogController::class, 'likeBlog']);
     Route::delete('/unlikeBlog/{id}', [BlogController::class, 'unlikeBlog']);
     Route::get('/serachBlog', [BlogController::class, 'searchBlogs']);
     Route::delete('/deletePost/{id}', [BlogController::class, 'deletePost']);
     
     Route::delete('/logout', [AuthController::class, 'logout']);
 });
-Route::put('/editBlog/{id}', [BlogController::class, 'edit']);
 Route::fallback(function () {
     return response()->json(['message' => 'Resource not found.'], 404);
 });

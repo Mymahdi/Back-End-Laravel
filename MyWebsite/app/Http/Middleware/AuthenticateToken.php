@@ -23,14 +23,12 @@ class AuthenticateToken
         ->where('user_tokens.expires_at', '>=', Db::raw('CURRENT_TIMESTAMP'))
         ->select('users.id')
         ->first();
-        // return response()->json($request);
-        // return response()->json($user);
         
         if (!$user) {
             return response()->json(['error' => 'Unauthorized. Invalid token or token expired.'], 401);
         }
 
-        // Add the user ID to the request for further use
+        // Add user ID to the request
         $request->merge(['user_id' => $user->id]);
 
         return $next($request);

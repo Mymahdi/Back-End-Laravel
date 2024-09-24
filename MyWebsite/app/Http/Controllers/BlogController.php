@@ -113,6 +113,10 @@ public function getUserBlogs(Request $request)
 
 public function likeBlog($id, Request $request)
     {
+        $blogExists = BlogModel:: findBlog($id);
+        if (!$blogExists) {
+            return response()->json(['message' => 'There is no Blog By this ID'], 400);
+        }
         $userId = $request->user_id;
 
         $alreadyLiked = BlogModel:: userLikedBlog($userId,$id);
@@ -128,6 +132,10 @@ public function likeBlog($id, Request $request)
 
 public function unlikeBlog($id, Request $request)
     {
+        $blogExists = BlogModel:: findBlog($id);
+        if (!$blogExists) {
+            return response()->json(['message' => 'There is no Blog By this ID'], 400);
+        }
         $userId = $request->user_id;
         $alreadyLiked = BlogModel:: userLikedBlog($userId,$id);
         

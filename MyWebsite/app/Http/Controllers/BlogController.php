@@ -156,4 +156,5 @@ public function unlikeBlog($id, Request $request)
 
     return response()->json($blogs);
 }
+
 }

@@ -11,6 +11,11 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        $userExixts = UserModel::findByEmail($request->email);
+        if ($userExixts) {
+            return response()->json(['error' => 'User already exists.'], 409);
+        }
+
         $vlidated = $request->validate([
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',

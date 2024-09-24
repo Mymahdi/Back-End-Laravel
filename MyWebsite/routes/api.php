@@ -10,23 +10,23 @@ use App\Http\Controllers\AdminController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/export-blogs', [AdminController::class, 'exportBlogs']);
 
 Route::middleware([AuthenticateToken::class])->group(function () {
-    Route::get('/export-blogs', [AdminController::class, 'exportBlogs']);
-    Route::post('/createBlog', [BlogController::class, 'create']);
+    Route::post('/create-blog', [BlogController::class, 'create']);
 
-    Route::get('/allPosts', [BlogController::class, 'getAllPosts']);
-    Route::get('/userPosts', [BlogController::class, 'getUserBlogs']);
+    Route::get('/all-posts', [BlogController::class, 'getAllPosts']);
+    Route::get('/user-posts', [BlogController::class, 'getUserBlogs']);
     
-    Route::put('/editBlog/{id}', [BlogController::class, 'edit']);
-    Route::delete('/deletePost/{id}', [BlogController::class, 'deletePost']);
+    Route::put('/edit-blog/{id}', [BlogController::class, 'edit']);
+    Route::delete('/delete-blog/{id}', [BlogController::class, 'deletePost']);
     
     Route::get('/blog-likers/{id}', [BlogController::class, 'getLikers']);
     Route::get('/tags-list', [BlogController::class, 'getTagsList']);
 
-    Route::post('/likeBlog/{id}', [BlogController::class, 'likeBlog']);
-    Route::delete('/unlikeBlog/{id}', [BlogController::class, 'unlikeBlog']);
-    Route::get('/serachBlog', [BlogController::class, 'searchBlogs']);
+    Route::post('/like-blog/{id}', [BlogController::class, 'likeBlog']);
+    Route::delete('/unlike-blog/{id}', [BlogController::class, 'unlikeBlog']);
+    Route::get('/serach-blog', [BlogController::class, 'searchBlogs']);
     
     Route::delete('/logout', [AuthController::class, 'logout']);
 });

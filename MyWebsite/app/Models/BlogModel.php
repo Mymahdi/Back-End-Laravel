@@ -30,9 +30,23 @@ class BlogModel
     }
 
 
+    public static function findBlog($id)
+    {
+        return DB::table('blogs')->where('id', $id)->first();
+    }
+
     public static function userLikedBlog($userId,$id)
     {
         return DB::table('likes')->where('user_id', $userId)->where('blog_id', $id)->exists();
+    }
+
+    public static function returnLikers($blogId)
+    {
+        return DB::table('likes')
+        ->join('users', 'likes.user_id', '=', 'users.id')
+        ->where('likes.blog_id', $blogId)
+        ->select('users.first_name', 'users.last_name', 'users.email')
+        ->get();
     }
 
 

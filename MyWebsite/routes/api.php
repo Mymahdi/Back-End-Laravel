@@ -19,10 +19,12 @@ Route::middleware([AuthenticateToken::class])->group(function () {
     Route::get('/userPosts', [BlogController::class, 'getUserBlogs']);
     
     Route::put('/editBlog/{id}', [BlogController::class, 'edit']);
+    Route::delete('/deletePost/{id}', [BlogController::class, 'deletePost']);
+    
+    Route::get('/blog-likers/{id}', [BlogController::class, 'getLikers']);
     Route::post('/likeBlog/{id}', [BlogController::class, 'likeBlog']);
     Route::delete('/unlikeBlog/{id}', [BlogController::class, 'unlikeBlog']);
     Route::get('/serachBlog', [BlogController::class, 'searchBlogs']);
-    Route::delete('/deletePost/{id}', [BlogController::class, 'deletePost']);
     
     Route::delete('/logout', [AuthController::class, 'logout']);
 });

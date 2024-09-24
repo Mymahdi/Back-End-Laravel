@@ -157,4 +157,22 @@ public function unlikeBlog($id, Request $request)
     return response()->json($blogs);
 }
 
+
+    public function getLikers($blogId)
+    {
+        $blogExists = BlogModel::findBlog($blogId);
+        if (!$blogExists) {
+            return response()->json(['message' => 'Blog not found.'], 404);
+        }
+        $likers = BlogModel::returnLikers($blogId);
+
+        if ($likers->isEmpty()) {
+            return response()->json(['message' => 'No likers found for this blog.'], 404);
+        }
+    
+        return response()->json($likers, 200);
+    }
+    
+
+
 }

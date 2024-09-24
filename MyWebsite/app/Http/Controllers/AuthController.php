@@ -59,9 +59,8 @@ class AuthController extends Controller
         if (!$token) {
             return response()->json(['error' => 'Token not provided.'], 401);
         }
-        $token = str_replace('Bearer ', '', $token);
         
-        $deleted = DB::table('user_tokens')->where('token', $token)->delete();
+        $deleted = DB::table('user_tokens')->where('user_id', $request->user_id)->delete();
         
         if ($deleted) {
             return response()->json(['message' => 'Logged out successfully.']);
@@ -69,7 +68,5 @@ class AuthController extends Controller
             return response()->json(['error' => 'Token not found.'], 404);
         }
     }
-    
-
     
 }

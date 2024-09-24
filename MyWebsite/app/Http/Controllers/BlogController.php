@@ -10,12 +10,6 @@ use App\Models\BlogModel;
 class BlogController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     // $this->middleware(\App\Http\Middleware\AuthenticateToken::class);
-    //     $this->middleware(AuthenticateToken::class);
-    // }
-
     public function create(Request $request)
     {
 
@@ -34,7 +28,7 @@ class BlogController extends Controller
             'user_id' =>  $request->user_id,
             'num_tags' =>  count($tagsArray),
         ]);
-        // $this->addTagsToBlog($tagsArray, $newBlogId);
+
         foreach ($tagsArray as $tagName) {
             $tagId = BlogModel::tagExists($tagName);
             
@@ -52,10 +46,10 @@ class BlogController extends Controller
     }
 
 
-    public function addTagsToBlog($tags, $blogId)
+    public static function addTagsToBlog($tags, $blogId)
     {
         
-        return $tags;
+        return "hellow";
         foreach ($tags as $tagName) {
             $tagId = BlogModel::tagExists($tagName);
             
@@ -66,39 +60,21 @@ class BlogController extends Controller
         }
     }
 
+
     public function edit(Request $request, $id)
 {
     $request->validate([
+        'title' => 'required|string|max:255',
         'body' => 'required|string|max:1000',
         'authorName' => 'required|string|max:255',
-        'title' => 'required|string|max:255',
     ]);
-    
-    $token = $request->header('Authorization');
-    if ($token && str_starts_with($token, 'Bearer ')) {
-        $token = str_replace('Bearer ', '', $token);
-        
-        $userToken = DB::table('user_tokens')->where('token', $token)->first();
-        if (!$userToken || now()->greaterThan($userToken->expires_at)) {
-            return response()->json(['error' => 'Invalid or expired token.'], 401);
-        }
-        
-        $blog = DB::table('blogs')->where('id', $id)->where('user_id', $userToken->user_id)->first();
+        $blog = DB::table('blogs')->where('id', $id)->where('user_id', $request->user_id)->first();
         if (!$blog) {
             return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
         }
 
-        DB::table('blogs')->where('id', $id)->update([
-            'title' => $request->title,
-            'body' => $request->body,
-            'author_name' => $request->authorName,
-            'last_update' => DB::raw('CURRENT_TIMESTAMP'),
-        ]);
-
+        BlogModel::editBlog($request,$id);
         return response()->json(['message' => 'Blog edited successfully.'], 200);
-    }
-
-    return response()->json(['error' => 'Token not provided try again.'], 401);
 }
 
 public function deletePost($id)
@@ -112,6 +88,7 @@ public function deletePost($id)
 
     return response()->json(['message' => 'Post deleted successfully.']);
 }
+
 
 public function getAllPosts()
 {
@@ -131,7 +108,6 @@ public function getUserBlogs(Request $request)
     if ($userBlogs->isEmpty()) {
         return response()->json(['message' => 'No blogs found for this user.'], 404);
     }
-
     return response()->json($userBlogs);
 }
 
@@ -180,6 +156,5 @@ public function unlikeBlog($id, Request $request)
 
     return response()->json($blogs);
 }
-
 
 }

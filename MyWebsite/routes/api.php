@@ -10,9 +10,9 @@ use App\Http\Controllers\AdminController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/export-blogs', [AdminController::class, 'exportBlogs']);
 
 Route::middleware([AuthenticateToken::class])->group(function () {
+    Route::get('/export-blogs', [AdminController::class, 'exportBlogs']);
     Route::post('/create-blog', [BlogController::class, 'create']);
 
     Route::get('/all-posts', [BlogController::class, 'getAllPosts']);

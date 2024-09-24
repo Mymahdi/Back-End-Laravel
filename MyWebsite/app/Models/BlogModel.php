@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class BlogModel extends Model
+class BlogModel
 {
     public static function storeBlog($data)
     {
@@ -61,6 +61,13 @@ class BlogModel extends Model
         ->orWhere('body', 'LIKE', '%' . $bodyTerm . '%')
         ->orWhere('author_name', 'LIKE', '%' . $authorTerm . '%')
         ->get();
+    }
+
+    public static function getAllBlogs()
+    {
+        return DB::table('blogs')
+            ->select('id', 'title', 'body', 'author_name', 'num_likes', 'num_tags','user_id','created_at','last_update')
+            ->get();
     }
 
     public static function tagExists($tagName)

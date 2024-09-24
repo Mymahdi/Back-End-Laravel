@@ -19,6 +19,17 @@ class BlogModel
     }
 
 
+    public static function editBlog($blog,$id)
+    {
+        DB::table('blogs')->where('id', $id)->update([
+            'title' => $blog->title,
+            'body' => $blog->body,
+            'author_name' => $blog->authorName,
+            'last_update' => DB::raw('CURRENT_TIMESTAMP'),
+        ]);
+    }
+
+
     public static function userLikedBlog($userId,$id)
     {
         return DB::table('likes')->where('user_id', $userId)->where('blog_id', $id)->exists();

@@ -11,10 +11,10 @@ class BlogModel
     public static function storeBlog($data)
     {
         DB::table('blogs')->insert([
-            'title' => $validated['title'],
-            'body' => $validated['body'],
-            'authorName' => $validated['authorName'],
-            'user_id' => auth()->id(),
+            'title' => $data['title'],
+            'body' => $data['body'],
+            'authorName' => $data['authorName'],
+            // 'user_id' => auth()->id(),
         ]);
     }
 

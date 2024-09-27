@@ -56,7 +56,7 @@ class BlogController extends Controller
             if (!$tagId) {
                 $tagId = BlogModel::addNewTag($tagName);
             }
-        BlogModell::recordTagBlog($blogId,$tagId);
+        BlogModel::recordTagBlog($blogId,$tagId);
         }
     }
 

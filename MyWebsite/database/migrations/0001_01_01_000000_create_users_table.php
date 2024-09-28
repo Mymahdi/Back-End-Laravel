@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
+   
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -15,8 +17,9 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->rememberToken();
             $table->datetime('registered_at')->useCurrent();
+            // $table->timestamps();
+            // $table->rememberToken();
         });
 
         Schema::create('sessions', function (Blueprint $table) {

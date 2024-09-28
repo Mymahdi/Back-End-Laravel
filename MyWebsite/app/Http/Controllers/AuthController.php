@@ -2,76 +2,94 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserModel;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+
     public function register(Request $request)
     {
-        $userExixts = UserModel::findByEmail($request->email);
-        if ($userExixts) {
-            return response()->json(['error' => 'User already exists.'], 409);
+        try {
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'confirmed',
+                    // 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
+                ],
+                
+            ]);
+            
+            $user = User::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'password' => $request->password, 
+            ]);
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Register successful.',
+                'access_token' => $token,
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
         }
-
-        $vlidated = $request->validate([
-            'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6',
-        ]);
-
-        UserModel::create($vlidated);
-
-        return response()->json([
-            'message' => 'User registered successfully'
-        ], 201);
     }
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
-        
-        $user = DB::table('users')->where('email', $request->email)->first();
-        
-        if ($user && Hash::check($request->password, $user->password)) {
-            
-            $token = bin2hex(random_bytes(10));
-            DB::table('user_tokens')->insert([
-                'user_id'    => $user->id,
-                'token'      => $token, 
-                'expires_at' => DB::raw('CURRENT_TIMESTAMP + INTERVAL 10 MINUTE'),
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required'
             ]);
             
+            if (!Auth::attempt($request->only('email', 'password'))) {
+                throw new \Exception('Invalid email or password');
+            }
+            $user = Auth::user();
+            $token = $user->createToken('auth_token')->plainTextToken;
+    
             return response()->json([
-                'message' => 'Login successful',
-                'token'   => $token,
+                'message' => 'Login successful.',
+                'access_token' => $token,
+                'token_type' => 'Bearer',
             ], 200);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 401);
         }
-
-        return response()->json(['error' => 'Invalid username or password!'], 401);
     }
 
     public function logout(Request $request)
     {
-        $token = $request->header('Authorization');
-         
-        if (!$token) {
-            return response()->json(['error' => 'Token not provided.'], 401);
-        }
-        
-        $deleted = DB::table('user_tokens')->where('user_id', $request->user_id)->delete();
-        
-        if ($deleted) {
-            return response()->json(['message' => 'Logged out successfully.']);
-        } else {
-            return response()->json(['error' => 'Token not found.'], 404);
-        }
+        $user = Auth::user();
+        // \Log::info('Logout request:', $request->all());
+        return ($user);
+        // Check if the user is authenticated
+        // if (Auth::check()) {
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json(['message' => 'You have been logged out']);
+        // }
+
+        // return response()->json(['error' => 'Unauthorized'], 401);
     }
     
 }

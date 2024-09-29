@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -36,7 +34,7 @@ class AuthController extends Controller
                 'password' => $request->password, 
             ]);
 
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken('authToken')->plainTextToken;
 
             return response()->json([
                 'message' => 'You Registered successfully.',
@@ -62,8 +60,7 @@ class AuthController extends Controller
                 throw new \Exception('Invalid email or password');
             }
             $user = Auth::user();
-            $token = $user->createToken('auth_token')->plainTextToken;
-    
+            $token = $user->createToken('authToken')->plainTextToken;
             return response()->json([
                 'message' => 'Login successful.',
                 'access_token' => $token,
@@ -75,20 +72,14 @@ class AuthController extends Controller
             ], 401);
         }
     }
-
     public function logout(Request $request)
     {
-        $user = Auth::user();
-        // \Log::info('Logout request:', $request->all());
-        return ($user);
-        // Check if the user is authenticated
-        // if (Auth::check()) {
-            $request->user()->currentAccessToken()->delete();
+        return $request;
+        $request->user()->currentAccessToken()->delete();
 
-            return response()->json(['message' => 'You have been logged out']);
-        // }
-
-        // return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json([
+            'message' => 'Logged out and token revoked successfully.'
+        ], 200);
     }
     
 }

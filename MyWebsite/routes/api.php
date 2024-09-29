@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Middleware\SanctumAuthMiddleware;
+use App\Http\Middleware\CheckTokenExpiration;
 // use App\Http\Middleware\AuthenticateToken;
 // use App\Http\Controllers\AdminController;
 
@@ -13,7 +14,6 @@ use App\Http\Middleware\SanctumAuthMiddleware;
 
 // Routes that require Sanctum authentication
 Route::middleware([SanctumAuthMiddleware::class])->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/blogs', [BlogController::class, 'index']);
 
     Route::post('/create-blog', [BlogController::class, 'create']);
@@ -25,6 +25,11 @@ Route::middleware([SanctumAuthMiddleware::class])->group(function () {
     Route::get('/all-posts', [BlogController::class, 'getAllPosts']);
     Route::get('/user-posts', [BlogController::class, 'getUserBlogs']);
 });
+
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::delete('logout', [AuthController::class, 'logout']);
+//     // Other routes that require authentication can go here
+// });
 // Route::middleware('auth:api')->post('/create-blog', [BlogController::class, 'store']);
 
 

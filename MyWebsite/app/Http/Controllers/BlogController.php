@@ -71,11 +71,11 @@ class BlogController extends Controller
         return response()->json(['message' => 'Blog edited successfully.'], 200);
     }
 
-    public function deletePost($id)
+    public function deletePost(Request $request, $id)
     {
-        $blog = Blog::find($id);
+        $blog = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
         if (!$blog) {
-            return response()->json(['error' => 'Blog Id Not Found.'], 404);
+            return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
         }
 
         $blog->delete();

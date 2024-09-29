@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('password');
+            // $table->string('api_token', 80)->nullable()->unique();
             $table->datetime('registered_at')->useCurrent();
             // $table->timestamps();
             // $table->rememberToken();

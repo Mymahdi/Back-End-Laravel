@@ -5,13 +5,13 @@ namespace App\Exports;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use App\models\BlogModel;
+use App\models\Blog;
 
 class BlogsExport implements FromArray, WithHeadings
 {
     public function array(): array
     {
-        $blogs = BlogModel::getAllBlogs();
+        $blogs = Blog::getAllBlogs();
     
         return $blogs->map(function ($blog) {
             return [

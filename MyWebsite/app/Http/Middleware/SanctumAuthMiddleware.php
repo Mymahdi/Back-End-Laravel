@@ -10,6 +10,7 @@ class SanctumAuthMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+        // return "sanctum setting";
         // Check if the user is authenticated using Sanctum
         if (!Auth::guard('sanctum')->check()) {
             return response()->json(['error' => 'Unauthorized Sanctum method'], 401);

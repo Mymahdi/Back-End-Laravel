@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateBlogsTable extends Migration
 {
@@ -14,10 +15,12 @@ class CreateBlogsTable extends Migration
             $table->text('body');
             $table->string('author_name');
             
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             
+            // $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // Use foreignId for user_id
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('last_update')->nullable();
+            $table->timestamp('updated_at')->nullable()->default(DB::raw('NULL'));
+            // $table->timestamps();
 
             $table->integer('num_likes')->default(0); 
             $table->integer('num_tags')->default(0);  

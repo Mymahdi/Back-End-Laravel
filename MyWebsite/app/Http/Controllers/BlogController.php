@@ -2,192 +2,139 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
+use App\Models\Tag;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Middleware\AuthenticateToken;
-use App\Models\Blog;
 
 class BlogController extends Controller
 {
 
+    public function store(Request $request)
+    {
+        return $request;
+        if (!$request->user()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+    }
+}
+
     public function create(Request $request)
     {
-
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string|max:1000',
             'authorName' => 'required|string|max:255',
             'tags' => 'nullable|string|max:255',
         ]);
-        
-        $tagsArray = array_unique(explode(',', $request['tags']));
-        $newBlogId = DB::table('blogs')->insertGetId([
+
+        $tagsArray = array_unique(explode(',', $request->tags));
+        $blog = Blog::create([
             'title' => $validated['title'],
             'body' => $validated['body'],
             'author_name' => $validated['authorName'],
-            'user_id' =>  $request->user_id,
-            'num_tags' =>  count($tagsArray),
+            'user_id' => $request->user_id,
+            'num_tags' => count(array_unique(explode(',', $request->tags))),
         ]);
-
-        foreach ($tagsArray as $tagName) {
-            $tagId = Blog::tagExists($tagName);
-            
-            if (!$tagId) {
-                $tagId = Blog::addNewTag($tagName);
-            }
-            Blog::recordTagBlog($newBlogId,$tagId);
-        }
-
-        if ($newBlogId) {
-            return response()->json(['message' => 'Blog created successfully'], 201);
-        } else {
-            return response()->json(['error' => 'Failed to create blog'], 500);
-        }
-    }
-
-
-    public static function addTagsToBlog($tags, $blogId)
-    {
+        // foreach ($tagsArray as $tagName) {
+        //     $tag = Tag::firstOrCreate(['name' => $tagName]);
+        //     $blog->tags()->attach($tag->id);
+        // }
+        // $this->addTagsToBlog($request->tags, $blog);
         
-        return "hellow";
-        foreach ($tags as $tagName) {
-            $tagId = Blog::tagExists($tagName);
-            
-            if (!$tagId) {
-                $tagId = Blog::addNewTag($tagName);
-            }
-        Blog::recordTagBlog($blogId,$tagId);
-        }
+        // return ($request);
+        return response()->json(['message' => 'Blog created successfully'], 201);
     }
-
+    
+    // public static function addTagsToBlog($tags, $blog)
+    // {
+    //     $tagsArray = array_unique(explode(',', $tags));
+    //     foreach ($tagsArray as $tagName) {
+    //         $tag = Tag::firstOrCreate(['name' => $tagName]);
+    //         $blog->tags()->attach($tag->id);
+    //     }
+    // }
 
     public function edit(Request $request, $id)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'body' => 'required|string|max:1000',
-        'authorName' => 'required|string|max:255',
-    ]);
-        $blog = DB::table('blogs')->where('id', $id)->where('user_id', $request->user_id)->first();
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'required|string|max:1000',
+            'authorName' => 'required|string|max:255',
+        ]);
+
+        $blog = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
+
         if (!$blog) {
             return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
         }
 
-        Blog::editBlog($request,$id);
+        $blog->update($request->only(['title', 'body', 'authorName']));
         return response()->json(['message' => 'Blog edited successfully.'], 200);
-}
-
-public function deletePost($id)
-{
-    $post = DB::table('blogs')->where('id', $id)->first();
-    if (!$post) {
-        return response()->json(['error' => 'Post not found.'], 404);
     }
 
-    DB::table('blogs')->where('id', $id)->delete();
-
-    return response()->json(['message' => 'Post deleted successfully.']);
-}
-
-
-public function getAllPosts()
-{
-    $posts = DB::table('blogs')->get();
-    if ($posts->isEmpty()) {
-        return response()->json(['message' => 'No posts found.'], 404);
-    }
-    return response()->json($posts);
-}
-
-
-public function getUserBlogs(Request $request)
-{
-    $userId = $request->user_id;
-    $userBlogs = DB::table('blogs')->where('user_id', $userId)->get();
-
-    if ($userBlogs->isEmpty()) {
-        return response()->json(['message' => 'No blogs found for this user.'], 404);
-    }
-    return response()->json($userBlogs);
-}
-
-public function likeBlog($id, Request $request)
+    public function deletePost($id)
     {
-        $blogExists = Blog:: findBlog($id);
-        if (!$blogExists) {
-            return response()->json(['message' => 'There is no Blog By this ID'], 400);
+        $blog = Blog::find($id);
+        if (!$blog) {
+            return response()->json(['error' => 'Post not found.'], 404);
         }
-        $userId = $request->user_id;
 
-        $alreadyLiked = Blog:: userLikedBlog($userId,$id);
-        
-        if ($alreadyLiked) {
+        $blog->delete();
+        return response()->json(['message' => 'Post deleted successfully.']);
+    }
+
+    public function getAllPosts()
+    {
+        $posts = Blog::with('tags', 'likes')->get();
+        if ($posts->isEmpty()) {
+            return response()->json(['message' => 'No posts found.'], 404);
+        }
+
+        return response()->json($posts);
+    }
+
+    public function getUserBlogs(Request $request)
+    {
+        $userBlogs = Blog::where('user_id', $request->user_id)->with('tags', 'likes')->get();
+
+        if ($userBlogs->isEmpty()) {
+            return response()->json(['message' => 'No blogs found for this user.'], 404);
+        }
+
+        return response()->json($userBlogs);
+    }
+
+    public function likeBlog($id, Request $request)
+    {
+        $blog = Blog::find($id);
+        if (!$blog) {
+            return response()->json(['message' => 'There is no Blog by this ID'], 400);
+        }
+
+        if ($blog->likes()->where('user_id', $request->user_id)->exists()) {
             return response()->json(['message' => 'You have already liked this post'], 400);
         }
-        
-        Blog:: recordLike($userId,$id);
-        Blog:: increaseNumLike($id);
+
+        $blog->likes()->create(['user_id' => $request->user_id]);
+        $blog->increment('num_likes');
         return response()->json(['message' => 'Post liked successfully!'], 200);
     }
 
-public function unlikeBlog($id, Request $request)
+    public function unlikeBlog($id, Request $request)
     {
-        $blogExists = Blog:: findBlog($id);
-        if (!$blogExists) {
-            return response()->json(['message' => 'There is no Blog By this ID'], 400);
+        $blog = Blog::find($id);
+        if (!$blog) {
+            return response()->json(['message' => 'There is no Blog by this ID'], 400);
         }
-        $userId = $request->user_id;
-        $alreadyLiked = Blog:: userLikedBlog($userId,$id);
-        
-        if (!$alreadyLiked) {
+
+        $like = $blog->likes()->where('user_id', $request->user_id)->first();
+        if (!$like) {
             return response()->json(['message' => 'You have not liked this post before'], 400);
         }
-        
-        Blog:: removeLike($userId,$id);
-        Blog:: decreaseNumLike($id);
+
+        $like->delete();
+        $blog->decrement('num_likes');
         return response()->json(['message' => 'Post unliked successfully!'], 200);
     }
-
-    public function searchBlogs(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'nullable|string|max:255',
-            'body' => 'nullable|string|max:1000',
-            'authorName' => 'nullable|string|max:255',
-        ]);
-
-        $titleTerm = '%' . ($request->query('title') ?? '') . '%';
-        $bodyTerm = '%' . ($request->query('body') ?? '') . '%';
-        $authorTerm = '%' . ($request->query('authorName') ?? '') . '%';
-        
-        $blogs = Blog::findBlogs($titleTerm,$bodyTerm,$authorTerm);
-
-    return response()->json($blogs);
-}
-
-
-    public function getLikers($blogId)
-    {
-        $blogExists = Blog::findBlog($blogId);
-        if (!$blogExists) {
-            return response()->json(['message' => 'Blog not found.'], 404);
-        }
-        $likers = Blog::returnLikers($blogId);
-
-        if ($likers->isEmpty()) {
-            return response()->json(['message' => 'No likers found for this blog.'], 404);
-        }
-    
-        return response()->json($likers, 200);
-    }
-    
-    public function getTagsList()
-    {
-        $tags = Blog::returnTagsList();
-        if ($tags->isEmpty()) {
-            return response()->json(['message' => 'No Tags Found.'], 404);
-        }
-        return response()->json($tags);
-    }
-    
 }

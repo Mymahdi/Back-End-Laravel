@@ -76,7 +76,7 @@ class BlogController extends Controller
     {
         $blog = Blog::find($id);
         if (!$blog) {
-            return response()->json(['error' => 'Post not found.'], 404);
+            return response()->json(['error' => 'Blog Id Not Found.'], 404);
         }
 
         $blog->delete();

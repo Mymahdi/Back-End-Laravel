@@ -85,7 +85,7 @@ class BlogController extends Controller
 
     public function getAllPosts()
     {
-        $posts = Blog::with('tags', 'likes')->get();
+        $posts = Blog::select('title', 'body', 'author_name')->get();
         if ($posts->isEmpty()) {
             return response()->json(['message' => 'No posts found.'], 404);
         }
@@ -93,12 +93,13 @@ class BlogController extends Controller
         return response()->json($posts);
     }
 
+
     public function getUserBlogs(Request $request)
     {
-        $userBlogs = Blog::where('user_id', $request->user_id)->with('tags', 'likes')->get();
-
+        $userBlogs = Blog::where('user_id', "2")->select('title','body','author_name')->get();
+        
         if ($userBlogs->isEmpty()) {
-            return response()->json(['message' => 'No blogs found for this user.'], 404);
+            return response()->json(['message' => ' This user has no blogs.'], 404);
         }
 
         return response()->json($userBlogs);

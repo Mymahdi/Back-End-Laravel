@@ -19,7 +19,7 @@ return new class extends Migration
             
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('blog_id')->references('id')->on('blogs')->onDelete('cascade');
-            #it ensures a user can like a post only once
+            #like post for once
             $table->unique(['user_id', 'blog_id']);
         });
         

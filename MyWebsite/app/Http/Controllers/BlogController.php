@@ -33,7 +33,7 @@ class BlogController extends Controller
             'title' => $validated['title'],
             'body' => $validated['body'],
             'author_name' => $validated['authorName'],
-            'user_id' => "1",
+            'user_id' => $request->user_id,
             'num_tags' => count(array_unique(explode(',', $request->tags))),
         ]);
         foreach ($tagsArray as $tagName) {
@@ -61,8 +61,7 @@ class BlogController extends Controller
             'body' => 'required|string|max:1000',
             'authorName' => 'required|string|max:255',
         ]);
-        // $blog = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
-        $blog = Blog::where('id', $id)->where('user_id', "1")->first();
+        $blog = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
         
         if (!$blog) {
             return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
@@ -96,7 +95,7 @@ class BlogController extends Controller
 
     public function getUserBlogs(Request $request)
     {
-        $userBlogs = Blog::where('user_id', "2")->select('title','body','author_name')->get();
+        $userBlogs = Blog::where('user_id', $request->user_id)->select('title','body','author_name')->get();
         
         if ($userBlogs->isEmpty()) {
             return response()->json(['message' => ' This user has no blogs.'], 404);

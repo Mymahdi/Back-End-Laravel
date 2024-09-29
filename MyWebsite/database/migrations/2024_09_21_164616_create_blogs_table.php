@@ -19,8 +19,9 @@ class CreateBlogsTable extends Migration
             
             // $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // Use foreignId for user_id
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->nullable()->default(DB::raw('NULL'));
-            // $table->timestamps();
+            // $table->timestamps("created_at");
+            $table->timestamp('updated_at')->nullable();
+            // $table->timestamp('updated_at')->nullable()->default(DB::raw('NULL'));
 
             $table->integer('num_likes')->default(0); 
             $table->integer('num_tags')->default(0);  

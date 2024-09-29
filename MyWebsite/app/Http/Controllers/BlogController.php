@@ -33,16 +33,15 @@ class BlogController extends Controller
             'title' => $validated['title'],
             'body' => $validated['body'],
             'author_name' => $validated['authorName'],
-            'user_id' => $request->user_id,
+            'user_id' => "1",
             'num_tags' => count(array_unique(explode(',', $request->tags))),
         ]);
-        // foreach ($tagsArray as $tagName) {
-        //     $tag = Tag::firstOrCreate(['name' => $tagName]);
-        //     $blog->tags()->attach($tag->id);
-        // }
+        foreach ($tagsArray as $tagName) {
+            $tag = Tag::firstOrCreate(['name' => $tagName]);
+            $blog->tags()->attach($tag->id);
+        }
         // $this->addTagsToBlog($request->tags, $blog);
         
-        // return ($request);
         return response()->json(['message' => 'Blog created successfully'], 201);
     }
     
@@ -62,13 +61,13 @@ class BlogController extends Controller
             'body' => 'required|string|max:1000',
             'authorName' => 'required|string|max:255',
         ]);
-
-        $blog = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
-
+        // $blog = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
+        $blog = Blog::where('id', $id)->where('user_id', "1")->first();
+        
         if (!$blog) {
             return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
         }
-
+        
         $blog->update($request->only(['title', 'body', 'authorName']));
         return response()->json(['message' => 'Blog edited successfully.'], 200);
     }

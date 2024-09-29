@@ -17,7 +17,17 @@ class Blog extends Model
         'num_likes',
         'num_tags',
     ];
+    
+    protected static function boot()
+    {
+        parent::boot();
 
+        // Set updated_at to null on creating event
+        static::creating(function ($model) {
+            $model->created_at = now(); // Automatically set created_at
+            $model->updated_at = null;  // Explicitly set updated_at to null
+        });
+    }
     // Define relationship with tags
     public function tags()
     {

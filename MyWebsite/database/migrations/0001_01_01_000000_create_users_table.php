@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             // $table->string('api_token', 80)->nullable()->unique();
             $table->datetime('registered_at')->useCurrent();
-            $table->timestamps();
+            // $table->timestamps();
             // $table->rememberToken();
         });
 

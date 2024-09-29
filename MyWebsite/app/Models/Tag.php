@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     use HasFactory;
-
+    
+    public $timestamps = false;
     protected $fillable = ['name'];
 
     // Define relationship with blogs

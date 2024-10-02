@@ -43,7 +43,7 @@ public function create(CreateBlogRequest $request): JsonResponse
 }
 
     
-    public function edit(EditBlogRequest $request, $id): JsonResponse
+    public function edit(EditBlogRequest $request, $id)
     {
         $blogFound = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
         if (!$blogFound) {
@@ -54,11 +54,10 @@ public function create(CreateBlogRequest $request): JsonResponse
         $blog->body = $request->body ?? $blog->body;
         $blog->publish_at = $request->publish_at ?? $blog->publish_at;
         $blog->save();
-        
+        $blog->tags()->sync([]); 
         if ($request->has('tags')) {
             $newTags = array_unique(array: $request->tags);
             
-            $blog->tags()->sync([]); 
             foreach ($newTags as $tagName) {
                 $tag = Tag::firstOrCreate(['name' => $tagName]);
                 $blog->tags()->attach($tag->id);

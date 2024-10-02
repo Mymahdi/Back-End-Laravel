@@ -7,8 +7,11 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\UpdateBlogRequest;
+use App\Http\Requests\CreateBlogRequest;
+use App\Http\Requests\EditBlogRequest;
+use Hamcrest\Arrays\IsArray;
+
+use function PHPUnit\Framework\isNull;
 
 class BlogController extends Controller
 {
@@ -21,47 +24,39 @@ class BlogController extends Controller
     }
 }
 
-    public function create(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255|min:3',
-            'body' => 'required|string|max:1000|min:5',
-            'tags' => 'nullable|array|max:255',
-            'tags.*' => 'string|min:2|max:32',
-            'publish_at' => 'nullable|date',
-        ]);
-        
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-        $user = User::find($request->user_id);
-        $blog = Blog::create([
-            'title' => $request->title,
-            'body' => $request->body,
-            'author_name' => $user->first_name . ' ' . $user->last_name,
-            'user_id' => $request->user_id,
-            'publish_at' => $request->publish_at ?? now(),
-        ]);
-        $UniqueTagsArray = array_unique(array: $request->tags);
-        Tag::attachTagsToBlog($blog, $UniqueTagsArray);
-        return response()->json(['message' => 'Blog created successfully'], 201);
-    }
+
+public function create(CreateBlogRequest $request): JsonResponse
+{
+    $user = User::find($request->user_id);
+    $blog = Blog::create([
+        'title' => $request->title,
+        'body' => $request->body,
+        'author_name' => $user->first_name . ' ' . $user->last_name,
+        'user_id' => $request->user_id,
+        'publish_at' => $request->publish_at ?? now(),
+    ]);
+
+    $UniqueTagsArray = array_unique($request->tags);
+    Tag::attachTagsToBlog($blog, $UniqueTagsArray);
+
+    return response()->json(['message' => 'Blog created successfully'], 201);
+}
+
     
-    public function edit(UpdateBlogRequest $request, $id): JsonResponse
+    public function edit(EditBlogRequest $request, $id): JsonResponse
     {
-        $blog = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
-        
-        if (!$blog) {
+        $blogFound = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
+        if (!$blogFound) {
             return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
         }
-
+        $blog = $blogFound;
         $blog->title = $request->title ?? $blog->title;
         $blog->body = $request->body ?? $blog->body;
         $blog->publish_at = $request->publish_at ?? $blog->publish_at;
         $blog->save();
         
         if ($request->has('tags')) {
-            $newTags = array_unique($request->tags);
+            $newTags = array_unique(array: $request->tags);
             
             $blog->tags()->sync([]); 
             foreach ($newTags as $tagName) {

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateBlogRequest extends FormRequest
+class EditBlogRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,8 +14,8 @@ class UpdateBlogRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'nullable|string|max:255',
-            'body' => 'nullable|string|max:1000', 
+            'title' => 'nullable|string|max:255|min:2',
+            'body' => 'nullable|string|max:1000|min:3', 
             'publish_at' => 'nullable|date',
             'tags' => 'nullable|array',
             'tags.*' => 'string|min:2|max:32',

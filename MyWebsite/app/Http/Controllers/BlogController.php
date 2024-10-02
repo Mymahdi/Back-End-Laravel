@@ -35,7 +35,6 @@ class BlogController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        // $UniqueTagsArray = array_unique(array: $request->tags);
         $user = User::find($request->user_id);
         $blog = Blog::create([
             'title' => $request->title,
@@ -44,12 +43,8 @@ class BlogController extends Controller
             'user_id' => $request->user_id,
             'publish_at' => $request->publish_at ?? now(),
         ]);
-        // foreach ($UniqueTagsArray as $tagName) {
-        //     $tag = Tag::firstOrCreate(['name' => $tagName]);
-        //     $blog->tags()->attach($tag->id);
-        // }
-        // $this->addTagsToBlog($request->tags, $blog);
-        
+        $UniqueTagsArray = array_unique(array: $request->tags);
+        Tag::attachTagsToBlog($blog, $UniqueTagsArray);
         return response()->json(['message' => 'Blog created successfully'], 201);
     }
     

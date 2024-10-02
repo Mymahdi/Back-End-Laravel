@@ -14,29 +14,29 @@ class Blog extends Model
         'body',
         'author_name',
         'user_id',
-        'num_likes',
-        'num_tags',
+        'publish_at',
     ];
     
     protected static function boot()
     {
         parent::boot();
 
-        // Set updated_at to null on creating event
         static::creating(function ($model) {
-            $model->created_at = now(); // Automatically set created_at
-            $model->updated_at = null;  // Explicitly set updated_at to null
+            $model->created_at = now();
+            $model->updated_at = null;
         });
     }
-    // Define relationship with tags
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'tags_blogs', 'blog_id', 'tag_id');
     }
 
-    // Define relationship with likes
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function likes()
     {
-        return $this->hasMany(Like::class, 'blog_id');
+        return $this->morphMany(Like::class, 'likeable');
     }
 }

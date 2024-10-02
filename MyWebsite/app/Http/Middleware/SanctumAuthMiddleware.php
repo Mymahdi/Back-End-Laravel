@@ -16,6 +16,7 @@ class SanctumAuthMiddleware
         if (!$user) {
             return response()->json(['error' => 'Unauthorized Sanctum method'], 401);
         }
+        $request->merge(['user_id' => $user->id]);
         return $next($request);
     }
 }

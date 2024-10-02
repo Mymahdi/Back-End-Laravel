@@ -15,6 +15,7 @@ class Blog extends Model
         'author_name',
         'user_id',
         'publish_at',
+        'is_published',
     ];
     
     protected static function boot()

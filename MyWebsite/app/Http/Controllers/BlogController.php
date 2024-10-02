@@ -28,12 +28,14 @@ class BlogController extends Controller
 public function create(CreateBlogRequest $request): JsonResponse
 {
     $user = User::find($request->user_id);
+    $publishAt = $request->publish_at ?? now();
     $blog = Blog::create([
         'title' => $request->title,
         'body' => $request->body,
         'author_name' => $user->first_name . ' ' . $user->last_name,
         'user_id' => $request->user_id,
-        'publish_at' => $request->publish_at ?? now(),
+        'publish_at' => $publishAt,
+        'is_published' => ($publishAt == now()) ? true : false,
     ]);
 
     $UniqueTagsArray = array_unique($request->tags);

@@ -45,7 +45,7 @@ public function create(CreateBlogRequest $request): JsonResponse
 }
 
     
-    public function edit(EditBlogRequest $request, $id)
+    public function edit(EditBlogRequest $request, int $id): JsonResponse
     {
         $blogFound = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
         if (!$blogFound) {
@@ -70,44 +70,33 @@ public function create(CreateBlogRequest $request): JsonResponse
     }
     
 
-    public function deletePost(Request $request, $id)
+    public function deletePost(Request $request, int $id): JsonResponse
     {
         $blog = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
         if (!$blog) {
             return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
         }
-
         $blog->delete();
         return response()->json(['message' => 'Post deleted successfully.']);
     }
 
-    public function getAllPosts()
-{
-    $posts = Blog::with('comments')->select('title', 'body', 'user_id')->get();
-    // return $posts;
-    if ($posts->isEmpty()) {
-        return response()->json(data: ['message' => 'No posts found.'], status: 404);
+    public function getAllPosts(): JsonResponse
+    {
+        $posts = Blog::with(['author', 'comments.likes'])->select('title', 'body', 'user_id')->get();
+        if ($posts->isEmpty()) {
+            return response()->json(['message' => 'No posts found.'], 404);
+        }
+    
+        $postsData = $posts->map(function (Blog $post) {
+            return [
+                'title' => $post->title,
+                'body' => $post->body,
+                'author_name' => $post->author->first_name . ' ' . $post->author->last_name,
+            ];
+        });
+    
+        return response()->json($postsData, 200);
     }
-
-    $postsData = $posts->map(function (Blog $post): array {
-        return [
-            'title' => $post->title,
-            'body' => $post->body,
-            'author_name' =>$post->author->first_name . ' ' . $post->author->last_name,
-            'comments' => $post->comments->map(function ($comment): array {
-                return [
-                    'user_id' => $comment->user_id,
-                    'comment_body' => $comment->body,
-                    'created_at' => $comment->created_at,
-                    'likes_count' => $comment->likes->count(),
-                ];
-            }),
-        ];
-    });
-
-    return response()->json($postsData);
-}
-
 
 
     public function getUserBlogs(Request $request): JsonResponse

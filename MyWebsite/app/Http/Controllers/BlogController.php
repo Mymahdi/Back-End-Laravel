@@ -9,21 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
 use App\Http\Requests\EditBlogRequest;
-use Hamcrest\Arrays\IsArray;
-
-use function PHPUnit\Framework\isNull;
 
 class BlogController extends Controller
 {
-
-    public function store(Request $request): Request
-    {
-        return $request;
-        if (!$request->user()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-    }
-}
-
 
 public function create(CreateBlogRequest $request): JsonResponse
 {

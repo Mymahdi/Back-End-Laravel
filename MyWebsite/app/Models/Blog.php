@@ -18,6 +18,7 @@ class Blog extends Model
         'is_published',
     ];
     
+    
     protected static function boot()
     {
         parent::boot();
@@ -30,6 +31,10 @@ class Blog extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'tags_blogs', 'blog_id', 'tag_id');
+    }
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     public function author()

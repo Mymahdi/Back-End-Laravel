@@ -6,9 +6,6 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CommentController;
 
 
-
-// Public routes
-
 // Routes that require Sanctum authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/blogs', [BlogController::class, 'index']);
@@ -17,7 +14,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/edit-blog/{id}', [BlogController::class, 'edit']);
     Route::delete('/delete-blog/{id}', [BlogController::class, 'deletePost']);
     Route::get('/show-all-posts', [BlogController::class, 'showAllBlogs']);
-    Route::get('/show-user-posts', [BlogController::class, 'getUserBlogs']);
+    Route::get('/show-user-posts', [BlogController::class, 'showUserBlogs']);
+
+    Route::post('/like/{type}/{id}', [BlogController::class, 'likeBlog']);
+    Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeBlog']);
+
+    Route::post('/like/{type}/{id}', [BlogController::class, 'likeBlog']);
+    Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeBlog']);
+    // Route::get('/export-blogs', [AdminController::class, 'exportBlogs']);
     
     Route::delete('/logout', [AuthController::class, 'logout']);
 });
@@ -33,15 +37,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
 // Route::middleware([AuthenticateToken::class])->group(function () {
-    //     Route::get('/export-blogs', [AdminController::class, 'exportBlogs']);
 
     
 
 //     Route::get('/blog-likers/{id}', [BlogController::class, 'getLikers']);
 //     Route::get('/tags-list', [BlogController::class, 'getTagsList']);
 
-//     Route::post('/like-blog/{id}', [BlogController::class, 'likeBlog']);
-//     Route::delete('/unlike-blog/{id}', [BlogController::class, 'unlikeBlog']);
 //     Route::get('/serach-blog', [BlogController::class, 'searchBlogs']);
     
 // });

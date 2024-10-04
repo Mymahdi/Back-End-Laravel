@@ -49,7 +49,7 @@ class AuthController extends Controller
         }
     }
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
             
         $request->validate([
@@ -69,13 +69,14 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Invalid Email or Password'], 401);
     }
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
-        $user = Auth::guard('sanctum')->user();
-        $user->currentAccessToken()->delete();
-        return response()->json([
-            'message' => 'You Logged '."$user->first_name "."$user->last_name"
-        ], 200);
-    }
+        if (Auth::guard('sanctum')->check()) {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json(['message' => 'Logged out successfully'], 200);
+        }
+        return response()->json(['message' => 'Invalid token or user not authenticated'], 401);
     
+    }
+        
 }

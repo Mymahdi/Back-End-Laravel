@@ -11,13 +11,13 @@ use App\Http\Controllers\CommentController;
 
 // Routes that require Sanctum authentication
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/all-posts', [BlogController::class, 'showAllBlogs']);
     Route::get('/blogs', [BlogController::class, 'index']);
     Route::post('comment-blog/{id}', [CommentController::class, 'addCommentToBlog']);
     Route::post('/create-blog', [BlogController::class, 'create']);
     Route::put('/edit-blog/{id}', [BlogController::class, 'edit']);
     Route::delete('/delete-blog/{id}', [BlogController::class, 'deletePost']);
-    Route::get('/user-posts', [BlogController::class, 'getUserBlogs']);
+    Route::get('/show-all-posts', [BlogController::class, 'showAllBlogs']);
+    Route::get('/show-user-posts', [BlogController::class, 'getUserBlogs']);
     
     Route::delete('/logout', [AuthController::class, 'logout']);
 });

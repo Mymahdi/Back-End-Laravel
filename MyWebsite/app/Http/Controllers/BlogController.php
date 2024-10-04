@@ -49,8 +49,11 @@ public function edit(EditBlogRequest $request, int $id): JsonResponse
 }
  
 
-public function deletePost(Request $request, int $id): JsonResponse 
+public function deletePost(Request $request, int $id): JsonResponse
 {
+    $request->validate([
+        'id' => 'integer'
+    ]);
     $user = Auth::user();
     $blog = Blog::where('id', $id)
         ->where('user_id', $user->id)

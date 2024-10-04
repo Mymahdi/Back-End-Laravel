@@ -26,6 +26,10 @@ class Blog extends Model
     protected static function boot(): void
     {
         parent::boot();
+        
+        static::deleting(function ($blog) {
+            $blog->comments()->delete();
+        });
 
         static::creating(function ($model): void {
             $model->created_at = now();

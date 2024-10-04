@@ -6,6 +6,7 @@ use App\Models\Blog;
 use App\Models\Tag;
 use App\Models\Like;
 use App\Models\Comment;
+use App\Jobs\PublishBlog;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
@@ -16,7 +17,7 @@ use App\Http\Requests\EditBlogRequest;
 class BlogController extends Controller
 {
 
-public function create(CreateBlogRequest $request): JsonResponse
+public function create(CreateBlogRequest $request)
 {
     $user = Auth::user();
     $publishAt = $request->publish_at ?? now();
@@ -29,6 +30,7 @@ public function create(CreateBlogRequest $request): JsonResponse
         'is_published' => ($publishAt == now()) ? true : false,
     ]);
 
+    PublishBlog::dispatch($blog->id)->delay(now()->parse($publishAt));
     $UniqueTagsArray = array_unique(array: $request->tags);
     Tag::attachTagsToBlog($blog, $UniqueTagsArray);
 

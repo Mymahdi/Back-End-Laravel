@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\Tag;
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
@@ -87,4 +88,37 @@ public function deletePost(Request $request, int $id): JsonResponse
     
         return response()->json($userBlogs);
     }
+
+    public function likeBlog(int $id): JsonResponse
+    {
+        $blog = Blog::find($id);
+        if (!$blog) {
+            return response()->json(['error' => 'Blog not found.'], 404);
+        }
+
+        $likeResult = Like::like(likeableType: Blog::class, likeableId: $id);
+
+        if (isset($likeResult['message'])) {
+            return response()->json($likeResult, 400);
+        }
+
+        return response()->json(['message' => 'Blog liked successfully.']);
+    }
+
+    public function unlikeBlog(int $id): JsonResponse
+{
+    $blog = Blog::find($id);
+    if (!$blog) {
+        return response()->json(['error' => 'Blog not found.'], 404);
+    }
+
+    $unlikeResult = Like::unlike(likeableType: Blog::class, likeableId: $id);
+
+    if (isset($unlikeResult['message'])) {
+        return response()->json($unlikeResult, 400);
+    }
+
+    return response()->json(['message' => 'Blog unliked successfully.']);
+}
+
 }

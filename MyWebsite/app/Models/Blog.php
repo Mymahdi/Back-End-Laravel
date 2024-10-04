@@ -115,6 +115,7 @@ public function updateBlog(array $data, int $userId): bool
     return $this->save();
 }
 
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'tags_blogs', 'blog_id', 'tag_id');

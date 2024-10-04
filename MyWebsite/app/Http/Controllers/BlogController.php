@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\Tag;
-use App\Models\User;
-// use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EditBlogRequest;
 
 class BlogController extends Controller
@@ -16,13 +15,13 @@ class BlogController extends Controller
 
 public function create(CreateBlogRequest $request): JsonResponse
 {
-    $user = User::find($request->user_id);
+    $user = Auth::user();
     $publishAt = $request->publish_at ?? now();
     $blog = Blog::create([
         'title' => $request->title,
         'body' => $request->body,
         'author_name' => $user->first_name . ' ' . $user->last_name,
-        'user_id' => $request->user_id,
+        'user_id' => $user->id,
         'publish_at' => $publishAt,
         'is_published' => ($publishAt == now()) ? true : false,
     ]);
@@ -36,7 +35,8 @@ public function create(CreateBlogRequest $request): JsonResponse
     
     public function edit(EditBlogRequest $request, int $id)
     {
-        $blogFound = Blog::where('id', $id)->where('user_id', $request->user_id)->first();
+        $user = Auth::user();
+        $blogFound = Blog::where('id', $id)->where('user_id', $user->id)->first();
         if (!$blogFound) {
             return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
         }
@@ -47,12 +47,8 @@ public function create(CreateBlogRequest $request): JsonResponse
         $blog->save();
         $blog->tags()->sync([]); 
         if ($request->has('tags')) {
-            $newTags = array_unique(array: $request->tags);
-            
-            foreach ($newTags as $tagName) {
-                $tag = Tag::firstOrCreate(['name' => $tagName]);
-                $blog->tags()->attach($tag->id);
-            }
+            $UniqueTagsArray = array_unique(array: $request->tags);
+            Tag::attachTagsToBlog($blog, $UniqueTagsArray);
         }
 
         return response()->json(['message' => 'Blog edited successfully.'], 200);

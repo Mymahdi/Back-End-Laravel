@@ -4,27 +4,22 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CommentController;
-use App\Http\Middleware\SanctumAuthMiddleware;
-use App\Http\Middleware\CheckTokenExpiration;
-// use App\Http\Middleware\AuthenticateToken;
-// use App\Http\Controllers\AdminController;
 
 
 
 // Public routes
 
 // Routes that require Sanctum authentication
-Route::middleware([SanctumAuthMiddleware::class])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/blogs', [BlogController::class, 'index']);
-    Route::post('comment-blog/{id}',[CommentController::class,'addCommentToBlog']);
+    Route::post('comment-blog/{id}', [CommentController::class, 'addCommentToBlog']);
     Route::post('/create-blog', [BlogController::class, 'create']);
     Route::put('/edit-blog/{id}', [BlogController::class, 'edit']);
     Route::delete('/delete-blog/{id}', [BlogController::class, 'deletePost']);
-
-    Route::delete('/logout', [AuthController::class, 'logout']);
+    Route::get('/show-all-posts', [BlogController::class, 'showAllBlogs']);
+    Route::get('/show-user-posts', [BlogController::class, 'getUserBlogs']);
     
-    Route::get('/all-posts', [BlogController::class, 'getAllPosts']);
-    Route::get('/user-posts', [BlogController::class, 'getUserBlogs']);
+    Route::delete('/logout', [AuthController::class, 'logout']);
 });
 
 // Route::middleware('auth:sanctum')->group(function () {

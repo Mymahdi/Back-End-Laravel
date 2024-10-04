@@ -5,25 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\Tag;
 use App\Models\User;
+// use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
 use App\Http\Requests\EditBlogRequest;
-use Hamcrest\Arrays\IsArray;
-
-use function PHPUnit\Framework\isNull;
 
 class BlogController extends Controller
 {
-
-    public function store(Request $request): Request
-    {
-        return $request;
-        if (!$request->user()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-    }
-}
-
 
 public function create(CreateBlogRequest $request): JsonResponse
 {
@@ -81,21 +70,13 @@ public function create(CreateBlogRequest $request): JsonResponse
         return response()->json(['message' => 'Post deleted successfully.']);
     }
 
-    public function getAllPosts(): JsonResponse
+    public function showAllBlogs(): JsonResponse
     {
-        $allBlogs = Blog::with(['author', 'comments.likes'])->select('title', 'body', 'user_id')->get();
-        if ($allBlogs->isEmpty()) {
+        $postsData = Blog::getAllBlogsWithFormattedData();
+        if ($postsData->isEmpty()) {
             return response()->json(['message' => 'No posts found.'], 404);
         }
-        // return response()->json($allBlogs);
-        $postsData = $allBlogs->map(function (Blog $post): array {
-            return [
-                'title' => $post->title,
-                'body' => $post->body,
-                'author_name' => $post->author->first_name . ' ' . $post->author->last_name,
-            ];
-        });
-    
+
         return response()->json($postsData, 200);
     }
 

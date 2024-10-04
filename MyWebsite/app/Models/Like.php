@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Like extends Model
 {
@@ -11,7 +12,7 @@ class Like extends Model
 
     protected $fillable = ['user_id', 'blog_id'];
 
-    public function blog()
+    public function blog(): BelongsTo
     {
         return $this->belongsTo(Blog::class, 'blog_id');
     }

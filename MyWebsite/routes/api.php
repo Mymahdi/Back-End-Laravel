@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CommentController;
 use App\Http\Middleware\SanctumAuthMiddleware;
 use App\Http\Middleware\CheckTokenExpiration;
 // use App\Http\Middleware\AuthenticateToken;
@@ -15,7 +16,7 @@ use App\Http\Middleware\CheckTokenExpiration;
 // Routes that require Sanctum authentication
 Route::middleware([SanctumAuthMiddleware::class])->group(function () {
     Route::get('/blogs', [BlogController::class, 'index']);
-
+    Route::post('comment-blog/{id}',[CommentController::class,'addCommentToBlog']);
     Route::post('/create-blog', [BlogController::class, 'create']);
     Route::put('/edit-blog/{id}', [BlogController::class, 'edit']);
     Route::delete('/delete-blog/{id}', [BlogController::class, 'deletePost']);

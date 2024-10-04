@@ -10,6 +10,7 @@ use App\Http\Requests\CreateBlogRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EditBlogRequest;
 
+
 class BlogController extends Controller
 {
 
@@ -33,36 +34,29 @@ public function create(CreateBlogRequest $request): JsonResponse
 }
 
     
-    public function edit(EditBlogRequest $request, int $id)
-    {
-        $user = Auth::user();
-        $blogFound = Blog::where('id', $id)->where('user_id', $user->id)->first();
-        if (!$blogFound) {
-            return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
-        }
-        $blog = $blogFound;
-        $blog->title = $request->title ?? $blog->title;
-        $blog->body = $request->body ?? $blog->body;
-        $blog->publish_at = $request->publish_at ?? $blog->publish_at;
-        $blog->save();
-        $blog->tags()->sync([]); 
-        if ($request->has('tags')) {
-            $UniqueTagsArray = array_unique(array: $request->tags);
-            Tag::attachTagsToBlog($blog, $UniqueTagsArray);
-        }
-
-        return response()->json(['message' => 'Blog edited successfully.'], 200);
+public function edit(EditBlogRequest $request, int $id): JsonResponse
+{
+    $user = Auth::user();
+    $blog = Blog::find($id);
+    if ($blog == null) {
+        return response()->json(['error' => 'Blog not found.'], 404);
     }
-    
+
+    if (!$blog->updateBlog($request->validated(), $user->id)) {
+        return response()->json(['error' => 'You do not have permission to edit this blog.'], 403);
+    }
+    return response()->json(['message' => 'Blog updated successfully.']);
+}
+ 
 
     public function deletePost(Request $request, int $id): JsonResponse
     {
-        $blogFound = Blog::where('id', $id)
+        $blog = Blog::where('id', $id)
         ->where('user_id', $request->user_id)->first();
-        if (!$blogFound) {
+        if ($blog == null) {
             return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
         }
-        $blogFound->delete();
+        $blog->delete();
         return response()->json(['message' => 'Post deleted successfully.']);
     }
 

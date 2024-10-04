@@ -49,16 +49,21 @@ public function edit(EditBlogRequest $request, int $id): JsonResponse
 }
  
 
-    public function deletePost(Request $request, int $id): JsonResponse
-    {
-        $blog = Blog::where('id', $id)
-        ->where('user_id', $request->user_id)->first();
-        if ($blog == null) {
-            return response()->json(['error' => 'Blog not found or you do not have permission to edit this blog.'], 404);
-        }
-        $blog->delete();
-        return response()->json(['message' => 'Post deleted successfully.']);
+public function deletePost(Request $request, int $id): JsonResponse 
+{
+    $user = Auth::user();
+    $blog = Blog::where('id', $id)
+        ->where('user_id', $user->id)
+        ->first();
+
+    if ($blog == null) {
+        return response()->json(['error' => 'Blog not found or you do not have permission to delete this blog.'], 404);
     }
+
+    $blog->delete();
+    return response()->json(['message' => 'Post deleted successfully.']);
+}
+
 
     public function showAllBlogs(): JsonResponse
     {

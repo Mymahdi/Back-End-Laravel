@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -19,27 +20,26 @@ class Like extends Model
         'likeable_type',
     ];
 
-    public function likeable()
+    public function likeable(): MorphTo
     {
         return $this->morphTo();
     }
 
 
     public $timestamps = false;
-   
     public function blog(): BelongsTo
     {
         return $this->belongsTo(Blog::class, 'blog_id');
     }
 
-    public static function like($likeableType, $likeableId): array
+    public static function like($likeableType, $likeableId): mixed
     {
         $likeExists = self::where('likeable_id', $likeableId)
             ->where('likeable_type', $likeableType)
             ->where('user_id', Auth::id())
             ->exists();
             if ($likeExists == true) {
-                return ['message' => 'You have already liked this.'];
+                return ['message' => "You have already liked this item."];
             }
             
         return self::create([
@@ -56,7 +56,7 @@ class Like extends Model
             ->where('user_id', Auth::id())
             ->first();
             if ($likedBlog == false) {
-                return ['message' => 'You have not liked this post.'];
+                return ['message' => "You have not liked this item."];
             }
             
             $likedBlog->delete();

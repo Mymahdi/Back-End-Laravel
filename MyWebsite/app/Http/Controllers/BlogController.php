@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\Tag;
 use App\Models\Like;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
@@ -89,30 +90,39 @@ public function deletePost(Request $request, int $id): JsonResponse
         return response()->json($userBlogs);
     }
 
-    public function likeBlog(int $id): JsonResponse
+    public function likeBlog(string $type,int $id): JsonResponse
     {
-        $blog = Blog::find($id);
-        if (!$blog) {
+        $modelClass = 'App\\Models\\' . ucfirst($type);
+        if (!class_exists($modelClass)) {
+            return response()->json(['error' => 'Invalid type provided.'], 400);
+        }
+        
+        $item = app($modelClass)->find($id);
+        if ($item == null) {
             return response()->json(['error' => 'Blog not found.'], 404);
         }
-
-        $likeResult = Like::like(likeableType: Blog::class, likeableId: $id);
+        $likeResult = Like::like(likeableType: $modelClass, likeableId: $id);
 
         if (isset($likeResult['message'])) {
             return response()->json($likeResult, 400);
         }
 
-        return response()->json(['message' => 'Blog liked successfully.']);
+        return response()->json(['message' => "$type liked successfully."]);
     }
 
-    public function unlikeBlog(int $id): JsonResponse
+    public function unlikeBlog(string $type,int $id): JsonResponse
 {
-    $blog = Blog::find($id);
-    if (!$blog) {
-        return response()->json(['error' => 'Blog not found.'], 404);
+    $modelClass = 'App\\Models\\' . ucfirst($type);
+    if (!class_exists($modelClass)) {
+        return response()->json(['error' => 'Invalid type provided.'], 400);
+    }
+    
+    $item = app($modelClass)->find($id);
+    if ($item == null) {
+        return response()->json(['error' => "$type not found."], 404);
     }
 
-    $unlikeResult = Like::unlike(likeableType: Blog::class, likeableId: $id);
+    $unlikeResult = Like::unlike(likeableType: $modelClass, likeableId: $id);
 
     if (isset($unlikeResult['message'])) {
         return response()->json($unlikeResult, 400);

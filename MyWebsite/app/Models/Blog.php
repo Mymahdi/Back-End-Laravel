@@ -56,15 +56,14 @@ class Blog extends Model
                 'title' => $post->title,
                 'body' => $post->body,
                 'author_name' => $post->author->first_name . ' ' . $post->author->last_name,
-                'user_id' => $post->user_id,
                 'like_status' => $post->likes->contains('user_id', $authenticatedUserId)?"Liked":"Not Liked",  
-                'likes_count' => $post->likes_count ?? 0, 
+                'likes_count' => $post->likes()->count(),
                 'comments' => $post->comments->map(function ($comment) use ($authenticatedUserId) {
                     return [
                         'comment_body' => $comment->body,
                         'user_name' => $comment->user->first_name . ' ' . $comment->user->last_name, 
                         'like_status' => $comment->likes->contains('user_id', $authenticatedUserId)?"Liked":"Not Liked",
-                        'likes_count' => $comment->likes_count ?? 0,
+                        'likes_count' =>$comment->likes()->count(),
                     ];
                 }),
             ];
@@ -84,15 +83,14 @@ class Blog extends Model
                 'title' => $post->title,
                 'body' => $post->body,
                 'author_name' => $post->first_name . ' ' . $post->last_name,
-                'user_id' => $post->user_id,
                 'like_status' => $post->likes->contains('user_id', $authenticatedUserId)?"Liked":"Not Liked",  
-                'likes_count' => $post->likes_count ?? 0, 
+                'likes_count' => $post->likes()->count(),
                 'comments' => $post->comments->map(function ($comment) use ($authenticatedUserId) {
                     return [
                         'comment_body' => $comment->body,
                         'user_name' => $comment->user->first_name . ' ' . $comment->user->last_name, 
                         'like_status' => $comment->likes->contains('user_id', $authenticatedUserId)?"Liked":"Not Liked",
-                        'likes_count' => $comment->likes_count ?? 0,
+                        'likes_count' => $comment->likes()->count(),
                     ];
                 }),
             ];

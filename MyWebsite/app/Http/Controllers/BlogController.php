@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\Tag;
 use App\Models\User;
+// use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
@@ -69,7 +70,7 @@ public function create(CreateBlogRequest $request): JsonResponse
         return response()->json(['message' => 'Post deleted successfully.']);
     }
 
-    public function getAllPosts()
+    public function showAllBlogs(): JsonResponse
     {
         $postsData = Blog::getAllBlogsWithFormattedData();
         if ($postsData->isEmpty()) {

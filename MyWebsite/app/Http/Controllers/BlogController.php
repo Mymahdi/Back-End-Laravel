@@ -20,20 +20,15 @@ class BlogController extends Controller
 public function create(CreateBlogRequest $request)
 {
     $user = Auth::user();
-    $publishAt = $request->publish_at ?? now();
     $blog = Blog::create([
         'title' => $request->title,
         'body' => $request->body,
         'author_name' => $user->first_name . ' ' . $user->last_name,
         'user_id' => $user->id,
-        'publish_at' => $publishAt,
-        'is_published' => ($publishAt == now()) ? true : false,
     ]);
 
-    PublishBlog::dispatch($blog->id)->delay(now()->parse($publishAt));
     $UniqueTagsArray = array_unique(array: $request->tags);
-    Tag::attachTagsToBlog($blog, $UniqueTagsArray);
-
+    PublishBlog::dispatch($blog->id,$UniqueTagsArray)->delay(now()->parse($request->publish_at ?? now()));
     return response()->json(['message' => 'Blog created successfully'], 201);
 }
 

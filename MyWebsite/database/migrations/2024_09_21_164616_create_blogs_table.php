@@ -15,7 +15,6 @@ class CreateBlogsTable extends Migration
             $table->string('author_name');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            $table->timestamp('publish_at')->nullable();
             $table->boolean('is_published')->default(false);
         });
     }

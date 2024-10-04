@@ -19,7 +19,6 @@ class Blog extends Model
         'body',
         'author_name',
         'user_id',
-        'publish_at',
         'is_published',
     ];
     

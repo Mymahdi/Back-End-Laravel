@@ -69,21 +69,13 @@ public function create(CreateBlogRequest $request): JsonResponse
         return response()->json(['message' => 'Post deleted successfully.']);
     }
 
-    public function getAllPosts(): JsonResponse
+    public function getAllPosts()
     {
-        $allBlogs = Blog::with(['author', 'comments.likes'])->select('title', 'body', 'user_id')->get();
-        if ($allBlogs->isEmpty()) {
+        $postsData = Blog::getAllBlogsWithFormattedData();
+        if ($postsData->isEmpty()) {
             return response()->json(['message' => 'No posts found.'], 404);
         }
-        // return response()->json($allBlogs);
-        $postsData = $allBlogs->map(function (Blog $post): array {
-            return [
-                'title' => $post->title,
-                'body' => $post->body,
-                'author_name' => $post->author->first_name . ' ' . $post->author->last_name,
-            ];
-        });
-    
+
         return response()->json($postsData, 200);
     }
 

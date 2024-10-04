@@ -78,15 +78,13 @@ public function deletePost(Request $request, int $id): JsonResponse
         return response()->json($postsData, 200);
     }
 
-
-    public function getUserBlogs(Request $request): JsonResponse
+    public function showUserBlogs(): JsonResponse
     {
-        $userBlogs = Blog::where('user_id', $request->user_id)->select('title','body','author_name')->get();
-        
+        $userBlogs = Blog::userBlogs();
         if ($userBlogs->isEmpty()) {
-            return response()->json(['message' => ' This user has no blogs.'], 404);
+            return response()->json(['message' => 'This user has no blogs.'], 404);
         }
-
+    
         return response()->json($userBlogs);
     }
 }

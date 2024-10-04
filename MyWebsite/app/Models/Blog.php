@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 
 class Blog extends Model
 {
@@ -37,7 +38,7 @@ class Blog extends Model
         });
     }
 
-    public static function getAllBlogsWithFormattedData()
+    public static function getAllBlogsWithFormattedData(): Collection
     {
         $allBlogs = self::with([
             'author',
@@ -69,6 +70,33 @@ class Blog extends Model
             ];
         });
         
+    }
+
+    public static function userBlogs(): Collection
+    {
+        $authenticatedUserId = Auth::id();
+        $userBlogs = self::with('comments')
+        ->where('user_id', Auth::id())
+        ->select('id','title', 'body', 'author_name')
+        ->get();
+        return $userBlogs->map(function (Blog $post) use ($authenticatedUserId): array {
+            return [
+                'title' => $post->title,
+                'body' => $post->body,
+                'author_name' => $post->first_name . ' ' . $post->last_name,
+                'user_id' => $post->user_id,
+                'like_status' => $post->likes->contains('user_id', $authenticatedUserId)?"Liked":"Not Liked",  
+                'likes_count' => $post->likes_count ?? 0, 
+                'comments' => $post->comments->map(function ($comment) use ($authenticatedUserId) {
+                    return [
+                        'comment_body' => $comment->body,
+                        'user_name' => $comment->user->first_name . ' ' . $comment->user->last_name, 
+                        'like_status' => $comment->likes->contains('user_id', $authenticatedUserId)?"Liked":"Not Liked",
+                        'likes_count' => $comment->likes_count ?? 0,
+                    ];
+                }),
+            ];
+        });
     }
 
 

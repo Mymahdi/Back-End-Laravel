@@ -9,11 +9,12 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
+
 class PublishBlog implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $blogId;
+    public $blogId;
     protected $tags;
 
     /**
@@ -36,9 +37,11 @@ class PublishBlog implements ShouldQueue
         $blog = Blog::find($this->blogId);
 
         if ($blog) {
+            // $blog->tags()->sync([]); 
+            // $blog->tags()->detach();
+            Tag::attachTagsToBlog($blog, $this->tags);
             $blog->is_published = true;
             $blog->save();
-            Tag::attachTagsToBlog($blog, $this->tags);
         }
     }
 }

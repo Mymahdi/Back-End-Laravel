@@ -96,21 +96,16 @@ class Blog extends Model
         });
     }
 
-
-public function updateBlog(array $data, int $userId): bool
-{
-    if ($this->user_id !== $userId) {
-        throw new \Exception('You do not have permission to edit this blog.');
-    }
-    $this->title = $data['title'] ?? $this->title;
-    $this->body = $data['body'] ?? $this->body;
-    $this->publish_at = $data['publish_at'] ?? $this->publish_at;
-    $this->tags()->sync([]); 
-    $UniqueTagsArray = array_unique(array: $data['tags']);
-    Tag::attachTagsToBlog($this, $UniqueTagsArray);
+// public function editBlog(array $data, int $userId): bool
+// {
+//     // if ($this->user_id !== $userId) {
+//     //     throw new \Exception('You do not have permission to edit this blog.');
+//     // }
+//     $this->title = $data['title'] ?? $this->title;
+//     $this->body = $data['body'] ?? $this->body;
     
-    return $this->save();
-}
+//     return $this->save();
+// }
 
 
     public function tags(): BelongsToMany

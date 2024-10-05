@@ -10,7 +10,10 @@ use App\Http\Controllers\CommentController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/blogs', [BlogController::class, 'index']);
     Route::post('comment-blog/{id}', [CommentController::class, 'addCommentToBlog']);
-    Route::post('/create-blog', [BlogController::class, 'create']);
+
+    Route::post('/create-blog', [BlogController::class, 'create'])->middleware('daily.blog.limit');
+
+
     Route::put('/edit-blog/{id}', [BlogController::class, 'edit']);
     Route::delete('/delete-blog/{id}', [BlogController::class, 'deletePost']);
     Route::get('/show-all-posts', [BlogController::class, 'showAllBlogs']);

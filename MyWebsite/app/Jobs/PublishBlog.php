@@ -32,13 +32,11 @@ class PublishBlog implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $blog = Blog::find($this->blogId);
 
         if ($blog) {
-            // $blog->tags()->sync([]); 
-            // $blog->tags()->detach();
             Tag::attachTagsToBlog($blog, $this->tags);
             $blog->is_published = true;
             $blog->save();

@@ -24,13 +24,12 @@ public function create(CreateBlogRequest $request): JsonResponse
         'author_name' => $user->first_name . ' ' . $user->last_name,
         'user_id' => $user->id,
     ]);
-
     $UniqueTagsArray = array_unique(array: $request->tags);
     PublishBlog::dispatch($blog->id,$UniqueTagsArray)->delay(now()->parse($request->publish_at ?? now()));
     return response()->json(['message' => 'Blog created successfully'], 201);
 }
 
-protected function deletePreviousPublishJob(int $blogId)
+protected function deletePreviousPublishJob(int $blogId): void
 {
     $jobs = DB::table('jobs')->get();
 
@@ -46,7 +45,7 @@ protected function deletePreviousPublishJob(int $blogId)
         }
     }
 }
-public function edit(EditBlogRequest $request, int $blogId)
+public function edit(EditBlogRequest $request, int $blogId): JsonResponse
 {
     $user = Auth::user();
     $blog = Blog::findOrFail($blogId);
@@ -69,7 +68,6 @@ public function edit(EditBlogRequest $request, int $blogId)
         
         $this->deletePreviousPublishJob($blogId);
         $publishAt = $request->input('publish_at');
-
         $UniqueTagsArray = array_unique($request->input('tags', [])); 
         PublishBlog::dispatch($blog->id,$UniqueTagsArray)->delay(now()->parse($publishAt ?? now()));
     }

@@ -18,11 +18,6 @@ class CreateBlogRequest extends FormRequest
             'body' => 'required|string|max:1000|min:5',
             'tags' => 'nullable|array|max:255',
             'tags.*' => 'string|min:2|max:32',
-            'publish_at' => [
-                'nullable',
-                'date',
-                'after_or_equal:now',
-            ],
         ];
     }
 

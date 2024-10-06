@@ -18,11 +18,6 @@ class EditBlogRequest extends FormRequest
             'body' => 'nullable|string|max:1000|min:3', 
             'tags' => 'nullable|array',
             'tags.*' => 'string|min:2|max:32',
-            'publish_at' => [
-                'nullable',
-                'date',
-                'after_or_equal:now',
-            ],
         ];
     }
 }

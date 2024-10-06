@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EditBlogRequest;
+use App\Models\Tag;
 
 class BlogController extends Controller
 {
@@ -29,8 +30,9 @@ class BlogController extends Controller
 //     return response()->json(['message' => 'Blog created successfully'], 201);
 // }
 
-public function createBlog(CreateBlogRequest $request)
+public function create(CreateBlogRequest $request)
 {
+    // dd(vars: $request->tags);
     $user = Auth::user();
     $blog = Blog::create([
         'title' => $request->title,
@@ -38,22 +40,32 @@ public function createBlog(CreateBlogRequest $request)
         'author_name' => $user->first_name . ' ' . $user->last_name,
         'user_id' => $user->id,
     ]);
+    // $UniqueTagsArray = array_unique($blog->tags);
+    Tag::attachTagsToBlog($blog,  array_unique($request->tags));
+    // PublishBlog::dispatch($blog->id, $UniqueTagsArray)->delay(now()->parse($request->publish_at ?? now()));
 
     return response()->json(['message' => 'Blog created successfully.'], 201);
 }
 
-public function publishBlog(Request $request, $blogId)
+public function publish(Request $request, $blogId)
 {
+    $request->validate([
+        'publish_at' => 'nullable|date|date|after_or_equal:now',
+    ]);
     $user = Auth::user();
     $blog = Blog::findOrFail($blogId);
-
+    
     if ($blog == null||$blog->user_id !== $user->id) {
         return response()->json(['error' => 'Blog not found or You do not have permission to edit this blog.'], 404);
     }
-    $UniqueTagsArray = array_unique($request->tags);
-    PublishBlog::dispatch($blog->id, $UniqueTagsArray)->delay(now()->parse($request->publish_at ?? now()));
-
-    return response()->json(['message' => 'Blog scheduled for publishing successfully.']);
+    
+    if ($blog->is_published == 1) {
+        return response()->json(['error' => 'You cannot edit a published blog.'], 403);
+    }
+    
+    $this->deletePreviousPublishJob($blogId);
+    PublishBlog::dispatch($blog->id)->delay(now()->parse($request->publish_at ?? now()));
+    return response()->json(['message' => 'The blog is scheduled successfully.']);
 }
 
 protected function deletePreviousPublishJob(int $blogId): void
@@ -85,6 +97,7 @@ public function edit(EditBlogRequest $request, int $blogId): JsonResponse
     if ($blog->is_published == 1) {
         return response()->json(['error' => 'You cannot edit a published blog.'], 403);
     }
+
     $blog->update([
         'title' => $request->title,
         'body' => $request->body,

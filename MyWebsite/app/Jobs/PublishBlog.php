@@ -15,17 +15,17 @@ class PublishBlog implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $blogId;
-    protected $tags;
+    // protected $tags;
 
     /**
      *
      * @param int $blogId
-     * @param array $tags
+    //  * @param array $tags
      */
-    public function __construct(int $blogId, array $tags)
+    public function __construct(int $blogId,)
     {
         $this->blogId = $blogId;
-        $this->tags = $tags;
+        // $this->tags = $tags;
     }
 
     /**
@@ -37,7 +37,7 @@ class PublishBlog implements ShouldQueue
         $blog = Blog::find($this->blogId);
 
         if ($blog) {
-            Tag::attachTagsToBlog($blog, $this->tags);
+            // Tag::attachTagsToBlog($blog, $this->tags);
             $blog->is_published = true;
             $blog->save();
         }

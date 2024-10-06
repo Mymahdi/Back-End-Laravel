@@ -15,7 +15,21 @@ use App\Http\Requests\EditBlogRequest;
 class BlogController extends Controller
 {
 
-public function create(CreateBlogRequest $request): JsonResponse
+// public function create(CreateBlogRequest $request): JsonResponse
+// {
+//     $user = Auth::user();
+//     $blog = Blog::create([
+//         'title' => $request->title,
+//         'body' => $request->body,
+//         'author_name' => $user->first_name . ' ' . $user->last_name,
+//         'user_id' => $user->id,
+//     ]);
+//     $UniqueTagsArray = array_unique(array: $request->tags);
+//     PublishBlog::dispatch($blog->id,$UniqueTagsArray)->delay(now()->parse($request->publish_at ?? now()));
+//     return response()->json(['message' => 'Blog created successfully'], 201);
+// }
+
+public function createBlog(CreateBlogRequest $request)
 {
     $user = Auth::user();
     $blog = Blog::create([
@@ -24,9 +38,22 @@ public function create(CreateBlogRequest $request): JsonResponse
         'author_name' => $user->first_name . ' ' . $user->last_name,
         'user_id' => $user->id,
     ]);
-    $UniqueTagsArray = array_unique(array: $request->tags);
-    PublishBlog::dispatch($blog->id,$UniqueTagsArray)->delay(now()->parse($request->publish_at ?? now()));
-    return response()->json(['message' => 'Blog created successfully'], 201);
+
+    return response()->json(['message' => 'Blog created successfully.'], 201);
+}
+
+public function publishBlog(Request $request, $blogId)
+{
+    $user = Auth::user();
+    $blog = Blog::findOrFail($blogId);
+
+    if ($blog == null||$blog->user_id !== $user->id) {
+        return response()->json(['error' => 'Blog not found or You do not have permission to edit this blog.'], 404);
+    }
+    $UniqueTagsArray = array_unique($request->tags);
+    PublishBlog::dispatch($blog->id, $UniqueTagsArray)->delay(now()->parse($request->publish_at ?? now()));
+
+    return response()->json(['message' => 'Blog scheduled for publishing successfully.']);
 }
 
 protected function deletePreviousPublishJob(int $blogId): void

@@ -16,23 +16,8 @@ use App\Models\Tag;
 class BlogController extends Controller
 {
 
-// public function create(CreateBlogRequest $request): JsonResponse
-// {
-//     $user = Auth::user();
-//     $blog = Blog::create([
-//         'title' => $request->title,
-//         'body' => $request->body,
-//         'author_name' => $user->first_name . ' ' . $user->last_name,
-//         'user_id' => $user->id,
-//     ]);
-//     $UniqueTagsArray = array_unique(array: $request->tags);
-//     PublishBlog::dispatch($blog->id,$UniqueTagsArray)->delay(now()->parse($request->publish_at ?? now()));
-//     return response()->json(['message' => 'Blog created successfully'], 201);
-// }
-
 public function create(CreateBlogRequest $request)
 {
-    // dd(vars: $request->tags);
     $user = Auth::user();
     $blog = Blog::create([
         'title' => $request->title,
@@ -40,10 +25,7 @@ public function create(CreateBlogRequest $request)
         'author_name' => $user->first_name . ' ' . $user->last_name,
         'user_id' => $user->id,
     ]);
-    // $UniqueTagsArray = array_unique($blog->tags);
     Tag::attachTagsToBlog($blog,  array_unique($request->tags));
-    // PublishBlog::dispatch($blog->id, $UniqueTagsArray)->delay(now()->parse($request->publish_at ?? now()));
-
     return response()->json(['message' => 'Blog created successfully.'], 201);
 }
 
@@ -94,24 +76,14 @@ public function edit(EditBlogRequest $request, int $blogId): JsonResponse
         return response()->json(['error' => 'Blog not found or You do not have permission to edit this blog.'], 404);
     }
 
-    if ($blog->is_published == 1) {
-        return response()->json(['error' => 'You cannot edit a published blog.'], 403);
-    }
-
     $blog->update([
         'title' => $request->title,
         'body' => $request->body,
         'author_name' => $user->first_name . ' ' . $user->last_name,
     ]);
-
-    if ($request->has('publish_at')) {
-        
-        $this->deletePreviousPublishJob($blogId);
-        $publishAt = $request->input('publish_at');
-        $UniqueTagsArray = array_unique($request->input('tags', [])); 
-        PublishBlog::dispatch($blog->id,$UniqueTagsArray)->delay(now()->parse($publishAt ?? now()));
-    }
-
+    $blog->tags()->detach();
+    Tag::attachTagsToBlog($blog,  array_unique($request->tags));
+    $this->deletePreviousPublishJob($blogId);
     return response()->json(['message' => 'Blog edited successfully.']);
 }
 

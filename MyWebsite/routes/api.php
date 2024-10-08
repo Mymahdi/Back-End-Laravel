@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotificationController;
 use App\Mail\BlogNotification;
 use App\Models\Blog;
 use App\Models\User;
@@ -16,18 +17,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/blogs', [BlogController::class, 'index']);
     Route::post('comment-blog/{id}', [CommentController::class, 'addCommentToBlog']);
 
-    // Route::get('/test-email', function () {
-    //     $blog = Blog::first();
-    //     $user = User::first();
-    //     $email = 'henry15ronaldo79carlo1@gmail.com';
-    //     Mail::to($email)->send(new BlogNotification( $user,$blog));
-    //     return 'Email sent successfully';
-    // });
-
     Route::post('/create-blog', [BlogController::class, 'create']);
     Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware('daily.blog.limit');
 
-    Route::get('/blog/{id}', [BlogController::class, 'showNotifedBlog'])->name('blog.show');
+
+    Route::get('/user/Notifications', [NotificationController::class, 'getUserNotifications']);
+
+    Route::get('/show-Notified-Link/{id}', [BlogController::class, 'showNotifiedBlog'])->name('blog.show');
 
     Route::put('/edit-blog/{id}', [BlogController::class, 'edit']);
     Route::delete('/delete-blog/{id}', [BlogController::class, 'deletePost']);

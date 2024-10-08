@@ -14,11 +14,12 @@ use App\Http\Requests\EditBlogRequest;
 use App\Models\Notification;
 use App\Models\Tag;
 use Illuminate\Container\Attributes\Log;
+use Illuminate\Contracts\View\View;
 
 class BlogController extends Controller
 {
 
-public function create(CreateBlogRequest $request)
+public function create(CreateBlogRequest $request): JsonResponse
 {
     $user = Auth::user();
     $blog = Blog::create([
@@ -31,7 +32,7 @@ public function create(CreateBlogRequest $request)
     return response()->json(['message' => 'Blog created successfully.'], 201);
 }
 
-public function publish(Request $request, $blogId)
+public function publish(Request $request, $blogId): JsonResponse
 {
     $request->validate([
         'publish_at' => 'nullable|date|after_or_equal:now',
@@ -52,13 +53,13 @@ public function publish(Request $request, $blogId)
     return response()->json(['message' => 'The blog is scheduled successfully.']);
 }
 
-public function show($blodId)
+public function showNotifiedBlog($blogId)
 {
-    $blog = Blog::findOrFail($blodId);
-    Notification::where('user_id', Auth::id())
-        ->where('blog_id', $blodId)
-        ->update(['is_read' => true]);
-
+    $notification = Notification::where('user_id', Auth::id())
+        ->where('blog_id', $blogId)
+        ->first();
+        $notification->update(['is_read' => true]);
+        $blog = Blog::findOrFail($blogId);
         return view('showBlog', compact('blog'));
 }
 
@@ -109,10 +110,6 @@ public function deletePost(Request $request, int $id): JsonResponse
     $blog = Blog::where('id', $id)
         ->where('user_id', $user->id)
         ->first();
-
-    if ($blog == null) {
-        return response()->json(['error' => 'Blog not found or you do not have permission to delete this blog.'], 404);
-    }
 
     $blog->delete();
     return response()->json(['message' => 'Post deleted successfully.']);

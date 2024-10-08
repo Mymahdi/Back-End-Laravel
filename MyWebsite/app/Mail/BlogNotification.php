@@ -47,7 +47,7 @@ class BlogNotification extends Mailable
                 'authorLastName' => $this->author->last_name,
                 'blogTitle' => $this->blog->title,
                 'authorEmail' => $this->author->email,
-                'blogLink' => $this->blogLink = url('/blog/' . $this->blog->id),
+                'blogLink' => $this->blogLink = url('/api/show-Notified-Link/' . $this->blog->id),
                 // 'blogLink' => route('blog.show', ['id' => $this->blog->id]),
 
             ]

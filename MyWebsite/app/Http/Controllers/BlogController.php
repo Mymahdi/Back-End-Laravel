@@ -12,6 +12,7 @@ use App\Http\Requests\CreateBlogRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EditBlogRequest;
 use App\Models\Tag;
+use Illuminate\Container\Attributes\Log;
 
 class BlogController extends Controller
 {
@@ -46,8 +47,16 @@ public function publish(Request $request, $blogId)
     }
     
     $this->deletePreviousPublishJob($blogId);
-    PublishBlog::dispatch($blog->id)->delay(now()->parse($request->publish_at ?? now()));
+    PublishBlog::dispatch($blog->id);
+    // PublishBlog::dispatch($blog->id)->delay(now()->parse($request->publish_at ?? now()));
     return response()->json(['message' => 'The blog is scheduled successfully.']);
+}
+
+public function show($id)
+{
+    $blog = Blog::findOrFail($id);
+    // Log::info('Blog link: ' . $blog);
+    return view('showBlog', compact('blog'));
 }
 
 protected function deletePreviousPublishJob(int $blogId): void

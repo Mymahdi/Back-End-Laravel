@@ -6,14 +6,13 @@ use App\Models\Blog;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class BlogPublished
+class NoitfyPublishedBlog
 {
     use Dispatchable, SerializesModels;
 
     public $blog;
 
     /**
-     * Create a new event instance.
      *
      * @param \App\Models\Blog $blog
      */

@@ -1,9 +1,8 @@
 <?php
 namespace App\Jobs;
 
-use App\Events\BlogPublished;
+use App\Events\NoitfyPublishedBlog;
 use App\Models\Blog;
-use App\Models\Tag;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -35,7 +34,7 @@ class PublishBlog implements ShouldQueue
         $blog = Blog::findOrFail($this->blogId);
         $blog->is_published = true;
         $blog->save();
-        BlogPublished::dispatch($blog);
+        NoitfyPublishedBlog::dispatch($blog);
     }
 }
 

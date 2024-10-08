@@ -16,13 +16,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/blogs', [BlogController::class, 'index']);
     Route::post('comment-blog/{id}', [CommentController::class, 'addCommentToBlog']);
 
-    Route::get('/test-email', function () {
-        $blog = Blog::first();
-        $user = User::first();
-        $email = 'henry15ronaldo79carlo1@gmail.com';
-        Mail::to($email)->send(new BlogNotification( $user,$blog));
-        return 'Email sent successfully';
-    });
+    // Route::get('/test-email', function () {
+    //     $blog = Blog::first();
+    //     $user = User::first();
+    //     $email = 'henry15ronaldo79carlo1@gmail.com';
+    //     Mail::to($email)->send(new BlogNotification( $user,$blog));
+    //     return 'Email sent successfully';
+    // });
 
     Route::post('/create-blog', [BlogController::class, 'create']);
     Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware('daily.blog.limit');

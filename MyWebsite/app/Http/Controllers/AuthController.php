@@ -64,6 +64,7 @@ class AuthController extends Controller
             return response()->json([
                 'massage' => 'Login Successful',
                 'access_token' => $token,
+                'role' => $user->role,
             ], 200);
         }
 

@@ -24,7 +24,6 @@ class PublishBlog implements ShouldQueue
     public function __construct(int $blogId,)
     {
         $this->blog = Blog::findOrFail($blogId);
-        // $this->blogId = $blogId;
     }
 
     /**
@@ -33,14 +32,12 @@ class PublishBlog implements ShouldQueue
      */
     public function handle(): void
     {
-        // $blog = Blog::findOrFail($this->blogId);
-        $this->blog->save();
         $this->blog->is_published = true;
+        $this->blog->save();
         Log::info('blog dispached succesfully', [
             'blog_id' => $this->blog->id,
             'blog_title' => $this->blog->title,
         ]);
-        // dd($this->blog);
         NotifyPublishedBlog::dispatch($this->blog);
     }
 }

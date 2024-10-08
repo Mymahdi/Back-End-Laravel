@@ -33,12 +33,12 @@ public function create(CreateBlogRequest $request)
 public function publish(Request $request, $blogId)
 {
     $request->validate([
-        'publish_at' => 'nullable|date|date|after_or_equal:now',
+        'publish_at' => 'nullable|date|after_or_equal:now',
     ]);
     $user = Auth::user();
     $blog = Blog::findOrFail($blogId);
     
-    if ($blog == null||$blog->user_id !== $user->id) {
+    if ($blog->user_id !== $user->id) {
         return response()->json(['error' => 'Blog not found or You do not have permission to edit this blog.'], 404);
     }
     
@@ -47,15 +47,13 @@ public function publish(Request $request, $blogId)
     }
     
     $this->deletePreviousPublishJob($blogId);
-    PublishBlog::dispatch($blog->id);
-    // PublishBlog::dispatch($blog->id)->delay(now()->parse($request->publish_at ?? now()));
+    PublishBlog::dispatch($blog->id)->delay(now()->parse($request->publish_at ?? now()));
     return response()->json(['message' => 'The blog is scheduled successfully.']);
 }
 
 public function show($id)
 {
     $blog = Blog::findOrFail($id);
-    // Log::info('Blog link: ' . $blog);
     return view('showBlog', compact('blog'));
 }
 

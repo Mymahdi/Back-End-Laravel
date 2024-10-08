@@ -27,6 +27,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/create-blog', [BlogController::class, 'create']);
     Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware('daily.blog.limit');
 
+    Route::get('/blog/{id}', [BlogController::class, 'showNotifedBlog'])->name('blog.show');
+
     Route::put('/edit-blog/{id}', [BlogController::class, 'edit']);
     Route::delete('/delete-blog/{id}', [BlogController::class, 'deletePost']);
     Route::get('/show-all-posts', [BlogController::class, 'showAllBlogs']);

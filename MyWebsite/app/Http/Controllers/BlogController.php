@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EditBlogRequest;
+use App\Models\Notification;
 use App\Models\Tag;
 use Illuminate\Container\Attributes\Log;
 
@@ -51,10 +52,14 @@ public function publish(Request $request, $blogId)
     return response()->json(['message' => 'The blog is scheduled successfully.']);
 }
 
-public function show($id)
+public function show($blodId)
 {
-    $blog = Blog::findOrFail($id);
-    return view('showBlog', compact('blog'));
+    $blog = Blog::findOrFail($blodId);
+    Notification::where('user_id', Auth::id())
+        ->where('blog_id', $blodId)
+        ->update(['is_read' => true]);
+
+        return view('showBlog', compact('blog'));
 }
 
 protected function deletePreviousPublishJob(int $blogId): void

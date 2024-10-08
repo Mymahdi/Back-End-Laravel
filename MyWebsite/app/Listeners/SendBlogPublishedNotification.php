@@ -6,6 +6,7 @@ use App\Mail\BlogNotification;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Events\NotifyPublishedBlog;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Log;
 
 class SendBlogPublishedNotification
@@ -28,6 +29,13 @@ class SendBlogPublishedNotification
         ]);
         foreach ($users as $user) {
             Mail::to($user->email)->send(new BlogNotification($user,$blog));
+            Notification::create([
+                'link' => route('blog.show', ['id' => $blog->id]),
+                'title' => $blog->title,
+                'user_id' => $user->id,
+                'blog_id' => $blog->id,
+                'is_read' => false,
+            ]);
         }
     }
 }

@@ -13,7 +13,8 @@ return new class extends Migration {
             $table->string('title');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('blog_id')->constrained('blogs')->onDelete('cascade');
-            $table->timestamp('sent_at');
+            $table->boolean('is_read')->default(false);
+            $table->timestamps();
         });
     }
 

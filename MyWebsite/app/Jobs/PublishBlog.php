@@ -15,21 +15,12 @@ class PublishBlog implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $blogId;
-    public $blog;
-    /**
-     *
-     * @param int $blogId
-     */
+    protected $blog;
     public function __construct(int $blogId,)
     {
         $this->blog = Blog::findOrFail($blogId);
     }
 
-    /**
-     *
-     * @return void
-     */
     public function handle(): void
     {
         $this->blog->is_published = true;

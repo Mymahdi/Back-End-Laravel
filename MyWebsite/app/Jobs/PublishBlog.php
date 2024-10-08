@@ -1,6 +1,7 @@
 <?php
 namespace App\Jobs;
 
+use App\Events\BlogPublished;
 use App\Models\Blog;
 use App\Models\Tag;
 use Illuminate\Bus\Queueable;
@@ -31,12 +32,10 @@ class PublishBlog implements ShouldQueue
      */
     public function handle(): void
     {
-        $blog = Blog::find($this->blogId);
-
-        if ($blog) {
-            $blog->is_published = true;
-            $blog->save();
-        }
+        $blog = Blog::findOrFail($this->blogId);
+        $blog->is_published = true;
+        $blog->save();
+        BlogPublished::dispatch($blog);
     }
 }
 

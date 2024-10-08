@@ -3,45 +3,60 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class BlogNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $authorName;
-    public $blogTitle;
-    public $authorEmail;
-    public $blogLink;
+    // public $author;
+    // public $blog;
 
     /**
      * Create a new message instance.
-     *
-     * @return void
      */
-    public function __construct($authorName, $blogTitle, $authorEmail, $blogLink)
+    public function __construct(private $author,private $blog)
     {
-        $this->authorName = $authorName;
-        $this->blogTitle = $blogTitle;
-        $this->authorEmail = $authorEmail;
-        $this->blogLink = $blogLink;
+        
     }
 
     /**
-     * Build the message.
-     *
-     * @return $this
+     * Get the message envelope.
      */
-    public function build()
+    public function envelope(): Envelope
     {
-        return $this->subject('New Blog Published: ' . $this->blogTitle)
-                    ->view('emails.blog_published')
-                    ->with([
-                        'authorName' => $this->authorName,
-                        'blogTitle' => $this->blogTitle,
-                        'authorEmail' => $this->authorEmail,
-                        'blogLink' => $this->blogLink,
-                    ]);
+        return new Envelope(
+            subject: 'New Blog Published: ' . $this->blog->title,
+        );
+    }
+
+    /**
+     * Get the message content definition.
+     */
+    public function content(): Content
+    {
+        return new Content(
+            view: 'email.blog_published',
+            with: [
+                'authorName' => $this->author->first_name,
+                'blogTitle' => $this->blog->title,
+                'authorEmail' => $this->author->email,
+                // 'blogLink' => $this->blogLink,
+            ]
+        );
+    }
+
+    /**
+     * Get the attachments for the message.
+     *
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     */
+    public function attachments(): array
+    {
+        return [];
     }
 }

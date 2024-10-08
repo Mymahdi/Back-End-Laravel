@@ -41,7 +41,7 @@ public function publish(Request $request, $blogId)
         return response()->json(['error' => 'Blog not found or You do not have permission to edit this blog.'], 404);
     }
     
-    if ($blog->is_published == 1) {
+    if ($blog->is_published == true) {
         return response()->json(['error' => 'You cannot edit a published blog.'], 403);
     }
     

@@ -6,7 +6,7 @@ use App\Models\Blog;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NoitfyPublishedBlog
+class NotifyPublishedBlog
 {
     use Dispatchable, SerializesModels;
 

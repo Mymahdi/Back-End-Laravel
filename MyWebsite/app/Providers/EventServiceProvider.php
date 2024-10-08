@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\BlogPublished;
+use App\Events\NotifyPublishedBlog;
 use App\Listeners\SendBlogPublishedNotification;
 use Illuminate\Support\ServiceProvider;
 
@@ -10,7 +10,7 @@ class EventServiceProvider extends ServiceProvider
 {
 
     protected $listen = [
-        BlogPublished::class => [
+        NotifyPublishedBlog::class => [
             SendBlogPublishedNotification::class,
         ],
     ];

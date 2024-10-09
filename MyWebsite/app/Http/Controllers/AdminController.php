@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\BlogsExport;
-use Illuminate\Container\Attributes\Auth;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AdminController extends Controller
 
@@ -13,12 +15,15 @@ class AdminController extends Controller
     public function __construct(){
     }
 
-    public function exportBlogs()
+    public function exportAllBlogs(): BinaryFileResponse
     {
-        return Excel::download(new BlogsExport, 'WeekBlogs.xlsx');
+        // Define a start and end date, due to avoiding the duplicate code
+        $startDate = Carbon::now()->subYear();
+        $endDate = Carbon::now();
+        return Excel::download(new BlogsExport($startDate, $endDate), 'all_blogs_export.xlsx');
     }
 
-    public function listExports()
+    public function listExports(): JsonResponse
     {
         $directory = 'exports';
 

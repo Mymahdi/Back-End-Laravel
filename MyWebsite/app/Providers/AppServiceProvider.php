@@ -19,8 +19,8 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(Schedule $schedule): void
+    public function boot(): void
     {
-        $schedule->job(new ExportWeeklyBlogs())->weeklyOn(1, '02:00');
+        //
     }
 }

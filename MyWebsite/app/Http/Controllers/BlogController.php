@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\BlogsExport;
 use App\Models\Blog;
 use App\Models\Like;
 use Illuminate\Support\Facades\DB;
@@ -14,10 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EditBlogRequest;
 use App\Models\Notification;
 use App\Models\Tag;
-use Carbon\Carbon;
-use Illuminate\Container\Attributes\Log;
+use Illuminate\Console\View\Components\Factory;
 use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 
 class BlogController extends Controller
 {
@@ -56,7 +53,7 @@ public function publish(Request $request, $blogId): JsonResponse
     return response()->json(['message' => 'The blog is scheduled successfully.']);
 }
 
-public function showNotifiedBlog($blogId)
+public function showNotifiedBlog($blogId): Factory|View
 {
     $notification = Notification::where('user_id', Auth::id())
         ->where('blog_id', $blogId)

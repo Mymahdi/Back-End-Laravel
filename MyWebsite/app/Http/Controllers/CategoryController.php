@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 
 class CategoryController extends Controller
 {
-    public function getCategories()
+    public function getCategories(): JsonResponse
     {
         $apiLink = "https://api.sokanacademy.com/api/announcements/blog-index-header";
 

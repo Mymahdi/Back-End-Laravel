@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
@@ -35,7 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/like/{type}/{id}', [BlogController::class, 'likeBlog']);
     Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeBlog']);
-    // Route::get('/export-blogs', [AdminController::class, 'exportBlogs']);
+
+    Route::get('/export-blogs', [AdminController::class, 'exportAllBlogs']);
+    
+    Route::get('/export-lastWeek-blogs', [AdminController::class, 'exportWeeklyBlogs'])->middleware('auth', 'role:admin');;
     
     Route::delete('/logout', [AuthController::class, 'logout']);
 });

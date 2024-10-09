@@ -28,6 +28,7 @@ public function create(CreateBlogRequest $request): JsonResponse
         'author_name' => $user->first_name . ' ' . $user->last_name,
         'user_id' => $user->id,
     ]);
+    // dd($blog->author());
     Tag::attachTagsToBlog($blog,  array_unique($request->tags));
     return response()->json(['message' => 'Blog created successfully.'], 201);
 }

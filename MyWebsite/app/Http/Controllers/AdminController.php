@@ -18,30 +18,32 @@ class AdminController extends Controller
         return Excel::download(new BlogsExport, 'WeekBlogs.xlsx');
     }
 
-    public function exportWeeklyBlogs(){
-        dd(Auth::user());
-            if (Auth::user()->role !== 'admin') {
-                dd("admin confirmed");
-                return response()->json(['error' => 'Unauthorized'], 403);
-            }
-    
-            $latestFile = collect(Storage::disk('public')->files())
-                ->filter(fn($file) => str_contains($file, 'weekly_blogs_'))
-                ->sortByDesc(fn($file) => Storage::lastModified($file))
-                ->first();
-    
-            if ($latestFile) {
-                return Storage::disk('public')->download($latestFile);
-            }
-    
-            return response()->json(['error' => 'No export file found'], 404);
+    public function downloadWeeklyExport()
+    {
+        // if (auth()->user()->role !== 'admin') {
+        //     return response()->json(['error' => 'Unauthorized'], 403);
         // }
+        
+        $latestFile = collect(Storage::disk('public')->files())
+        ->filter(fn($file) => str_contains($file, 'weekly_blogs_'))
+        ->sortByDesc(fn($file) => Storage::lastModified($file))
+        ->first();
 
-        $startDate = now()->subWeek()->startOfWeek();
-        $endDate = now()->subWeek()->endOfWeek();
-        dump(now());
-        dump($startDate);
-        dd($endDate);
+        if ($latestFile) {
+            return Storage::disk('public')->download($latestFile);
+        }
 
+        return response()->json(['error' => 'No export file found'], 404);
+    }
+
+    public function downloadExportedFile($fileName)
+    {
+        $filePath = "public/exports/{$fileName}";
+
+        if (!Storage::exists($filePath)) {
+            return response()->json(['error' => 'File not found'], 404);
+        }
+
+        return Storage::download($filePath);
     }
 }

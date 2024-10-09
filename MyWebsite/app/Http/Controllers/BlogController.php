@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BlogsExport;
 use App\Models\Blog;
 use App\Models\Like;
 use Illuminate\Support\Facades\DB;
@@ -13,8 +14,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EditBlogRequest;
 use App\Models\Notification;
 use App\Models\Tag;
+use Carbon\Carbon;
 use Illuminate\Container\Attributes\Log;
 use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BlogController extends Controller
 {
@@ -28,7 +31,6 @@ public function create(CreateBlogRequest $request): JsonResponse
         'author_name' => $user->first_name . ' ' . $user->last_name,
         'user_id' => $user->id,
     ]);
-    // dd($blog->author());
     Tag::attachTagsToBlog($blog,  array_unique($request->tags));
     return response()->json(['message' => 'Blog created successfully.'], 201);
 }
@@ -46,7 +48,7 @@ public function publish(Request $request, $blogId): JsonResponse
     }
     
     if ($blog->is_published == true) {
-        return response()->json(['error' => 'You cannot edit a published blog.'], 403);
+        return response()->json(['error' => 'You cannot schedule a published blog.'], 403);
     }
     
     $this->deletePreviousPublishJob($blogId);
@@ -177,5 +179,17 @@ public function deletePost(Request $request, int $id): JsonResponse
 
     return response()->json(['message' => 'Blog unliked successfully.']);
 }
+
+
+
+public function export(Request $request)
+{
+
+    $endDate = Carbon::now();
+    $startDate = $endDate->copy()->subHour();
+    // dd($endDate);
+    return Excel::download(new BlogsExport($startDate, $endDate), 'blogs.xlsx');
+}
+
 
 }

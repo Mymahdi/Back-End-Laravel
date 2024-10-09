@@ -50,7 +50,7 @@ class BlogsExport implements FromQuery, WithHeadings, WithMapping
             $blog->id,
             $blog->title,
             $blog->body,
-            $blog->likes->count(),
+            $blog->likes->count() ?: "0",
             $blog->tags->pluck('name')->implode(', '),
             $blog->author->first_name,
             $blog->author->last_name,

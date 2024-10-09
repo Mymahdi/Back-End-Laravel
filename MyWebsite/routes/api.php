@@ -7,6 +7,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Middleware\RateLimitPublishing;
 use App\Mail\BlogNotification;
 use App\Models\Blog;
 use App\Models\User;
@@ -20,7 +21,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('comment-blog/{id}', [CommentController::class, 'addCommentToBlog']);
 
     Route::post('/create-blog', [BlogController::class, 'create']);
-    Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware('daily.blog.limit');
+    // Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware('daily.blog.limit');
+    Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware(RateLimitPublishing::class);
 
 
     Route::get('/user/Notifications', [NotificationController::class, 'getUserNotifications']);

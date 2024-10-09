@@ -37,14 +37,12 @@ class AdminController extends Controller
         return response()->json($fileList);
     }
 
-    public function downloadExportedFile($fileName)
+    public function download($fileName): mixed
     {
-        $filePath = "public/exports/{$fileName}";
-
+        $filePath = "exports/$fileName.xlsx";
         if (!Storage::exists($filePath)) {
             return response()->json(['error' => 'File not found'], 404);
         }
-
         return Storage::download($filePath);
     }
 }

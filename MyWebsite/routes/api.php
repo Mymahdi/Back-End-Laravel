@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Route::get('/export-blogs', [AdminController::class, 'exportAllBlogs']);
     Route::get('/exports', [AdminController::class, 'listExports']);
+    Route::get('/exports/download/{filename}', [AdminController::class, 'download'])->name('exports.download');
     // Route::get('/export-lastWeek-blogs', [AdminController::class, 'exportWeeklyBlogs'])->middleware('auth', 'role:admin');
     
     Route::get('/export-blogs', [BlogController::class, 'export']);

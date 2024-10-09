@@ -1,49 +1,60 @@
 <?php
 
+// app/Exports/BlogsExport.php
+
 namespace App\Exports;
 
-use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Concerns\FromArray;
+use App\Models\Blog;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use App\models\Blog;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class BlogsExport implements FromArray, WithHeadings
+class BlogsExport implements FromQuery, WithHeadings, WithMapping
 {
-    public function array(): array
+    protected $startDate;
+    protected $endDate;
+
+    public function __construct($startDate, $endDate)
     {
-        $blogs = Blog::getAllBlogs();
-    
-        return $blogs->map(function ($blog) {
-            return [
-                'id'           => $blog->id,
-                'title'        => $blog->title,
-                'body'         => $blog->body,
-                'author_name'  => $blog->author_name,
-                'num_likes'    => $blog->num_likes,
-                'num_tags'     => $blog->num_tags,
-                'user_id'      => $blog->user_id,
-                'created_at'   => $blog->created_at,
-                '',            //empty column for seperating
-                '',            // empty column for seperating
-                'updated_at'   => $blog->last_update
-            ];
-        })->toArray();
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+    }
+
+    public function query()
+    {
+        return Blog::query()
+            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->withCount('likes')
+            ->with(['tags', 'author'])
+            ->select('id', 'title', 'body', 'user_id');
     }
 
     public function headings(): array
     {
         return [
-            'Id',
+            'Blog ID',
             'Title',
             'Body',
-            'Author name',
-            'Number of likes',
-            'Number of tags',
-            'User_id',
-            'Created_at',
-            '',
-            '',
-            'Last_update'
+            'Number of Likes',
+            'Tags',
+            'Author First Name',
+            'Author Last Name',
+            'Author Email',
+        ];
+    }
+
+    public function map($blog): array
+    {
+        $likesCount = $blog->likes ? $blog->likes->count() : 0;
+        return [
+            $blog->id,
+            $blog->title,
+            $blog->body,
+            $blog->likes->count() ?: "0",
+            $blog->tags->pluck('name')->implode(', '),
+            $blog->author->first_name,
+            $blog->author->last_name,
+            $blog->author->email,
         ];
     }
 }

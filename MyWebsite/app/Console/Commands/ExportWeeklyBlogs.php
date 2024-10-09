@@ -13,10 +13,8 @@ class ExportWeeklyBlogs extends Command
 
     public function handle()
     {
-        // $endDate = Carbon::now()->startOfWeek();
-        // $startDate = $endDate->copy()->subWeek();
-        $endDate = Carbon::now();
-        $startDate = $endDate->copy()->subDay();
+        $endDate = Carbon::now()->startOfWeek();
+        $startDate = $endDate->copy()->subWeek();
         $fileName = 'blogs_week_' . $startDate->format('Y_m_d') . '_to_' . $endDate->format('Y_m_d') . '.xlsx';
         Excel::store(new BlogsExport($startDate, $endDate), "exports/$fileName");
         $this->info('Weekly blogs export completed successfully and saved as ' . $fileName);

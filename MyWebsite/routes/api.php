@@ -37,12 +37,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/like/{type}/{id}', [BlogController::class, 'likeBlog']);
     Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeBlog']);
 
-    Route::get('/downlaod-all-blogs', [AdminController::class, 'exportAllBlogs']);
-    Route::get('/excels-list', [AdminController::class, 'listExports']);
-    Route::get('/exports/download/{filename}', [AdminController::class, 'download'])->name('exports.download');
+    Route::get('/downlaod-all-blogs', [AdminController::class, 'exportAllBlogs'])->middleware('admin');
+    Route::get('/excels-list', [AdminController::class, 'listExports'])->middleware('admin');
+    Route::get('/exports/download/{filename}', [AdminController::class, 'download'])->name('exports.download')->middleware('admin');
+    Route::get('/export-weekly-blogs', [AdminController::class, 'downloadWeeklyExport'])->middleware('admin');
     
     Route::get('/export-blogs', [BlogController::class, 'export']);
-    Route::get('/export-weekly-blogs', [AdminController::class, 'downloadWeeklyExport']);
     
     Route::delete('/logout', [AuthController::class, 'logout']);
 });

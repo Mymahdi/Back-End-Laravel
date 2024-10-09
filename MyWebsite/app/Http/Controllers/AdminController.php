@@ -18,6 +18,7 @@ class AdminController extends Controller
     public function exportAllBlogs(): BinaryFileResponse
     {
         // Define a start and end date, due to avoiding the duplicate code
+        //othewise its not hard to implement new Export file
         $startDate = Carbon::now()->subYear();
         $endDate = Carbon::now();
         return Excel::download(new BlogsExport($startDate, $endDate), 'all_blogs_export.xlsx');

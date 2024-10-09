@@ -3,14 +3,13 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Carbon\Carbon;
-use App\Models\Blog;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
-class DailyBlogLimit
+class RateLimitPublishing
 {
-    public function handle($request, Closure $next): mixed
+    public function handle(Request $request, Closure $next)
     {
         $key = 'publish_' . $request->user()->id;
 
@@ -21,6 +20,5 @@ class DailyBlogLimit
         RateLimiter::hit($key);
 
         return $next($request);
-    
     }
 }

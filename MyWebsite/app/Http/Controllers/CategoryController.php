@@ -8,8 +8,21 @@ class CategoryController extends Controller
 {
     public function getCategories()
     {
-        $apiLink = "https://api.sokanacademy.comss/api/announcements/blog-index-header";
+        $apiLink = "https://api.sokanacademy.com/api/announcements/blog-index-header";
+
         $response = Http::get($apiLink);
         $blogs = collect($response->json('data'));
+        $grouped = $blogs->groupBy(function ($item) {
+            return $item['all']['category_name'];
+        })
+        ->map(function ($group) {
+            return $group->map(function ($item) {
+                return [
+                    $item['all']['title'] => $item['all']['views_count']
+                ];
+            })->values();
+        });
+
+            return response()->json($grouped);
     }
 }

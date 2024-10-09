@@ -180,16 +180,4 @@ public function deletePost(Request $request, int $id): JsonResponse
     return response()->json(['message' => 'Blog unliked successfully.']);
 }
 
-
-
-public function export(Request $request)
-{
-
-    $endDate = Carbon::now();
-    $startDate = $endDate->copy()->subHour();
-    // dd($endDate);
-    return Excel::download(new BlogsExport($startDate, $endDate), 'blogs.xlsx');
-}
-
-
 }

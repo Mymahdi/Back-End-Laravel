@@ -18,22 +18,22 @@ class AdminController extends Controller
         return Excel::download(new BlogsExport, 'WeekBlogs.xlsx');
     }
 
-    public function downloadWeeklyExport()
+    public function listExports()
     {
-        // if (auth()->user()->role !== 'admin') {
-        //     return response()->json(['error' => 'Unauthorized'], 403);
-        // }
-        
-        $latestFile = collect(Storage::disk('public')->files())
-        ->filter(fn($file) => str_contains($file, 'weekly_blogs_'))
-        ->sortByDesc(fn($file) => Storage::lastModified($file))
-        ->first();
+        $files = Storage::disk('local')->files('private/exports');
 
-        if ($latestFile) {
-            return Storage::disk('public')->download($latestFile);
-        }
+        $excelFiles = array_filter($files, function ($file) {
+            return str_ends_with($file, '.xlsx');
+        });
 
-        return response()->json(['error' => 'No export file found'], 404);
+        $fileList = array_map(function ($file) {
+            return [
+                'filename' => basename($file),
+                'download_url' => route('exports.download', ['filename' => basename($file)])
+            ];
+        }, $excelFiles);
+
+        return response()->json($fileList);
     }
 
     public function downloadExportedFile($fileName)

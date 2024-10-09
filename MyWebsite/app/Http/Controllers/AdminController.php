@@ -20,19 +20,20 @@ class AdminController extends Controller
 
     public function listExports()
     {
-        $files = Storage::disk('local')->files('private/exports');
+        $directory = 'exports';
 
+        $files = Storage::disk('local')->files($directory);
         $excelFiles = array_filter($files, function ($file) {
             return str_ends_with($file, '.xlsx');
         });
-
+        
         $fileList = array_map(function ($file) {
             return [
                 'filename' => basename($file),
                 'download_url' => route('exports.download', ['filename' => basename($file)])
             ];
         }, $excelFiles);
-
+        
         return response()->json($fileList);
     }
 

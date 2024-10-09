@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeBlog']);
 
     // Route::get('/export-blogs', [AdminController::class, 'exportAllBlogs']);
-    
+    Route::get('/exports', [AdminController::class, 'listExports']);
     // Route::get('/export-lastWeek-blogs', [AdminController::class, 'exportWeeklyBlogs'])->middleware('auth', 'role:admin');
     
     Route::get('/export-blogs', [BlogController::class, 'export']);

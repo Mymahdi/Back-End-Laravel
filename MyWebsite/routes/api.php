@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NotificationController;
 use App\Mail\BlogNotification;
@@ -42,8 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/exports/download/{filename}', [AdminController::class, 'download'])->name('exports.download')->middleware('admin');
     Route::get('/export-weekly-blogs', [AdminController::class, 'downloadWeeklyExport'])->middleware('admin');
     
-    Route::get('/export-blogs', [BlogController::class, 'export']);
-    
+    Route::get('/show-categories', [CategoryController::class, 'getCategories']);
+
     Route::delete('/logout', [AuthController::class, 'logout']);
 });
 

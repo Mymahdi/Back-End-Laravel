@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
 
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
         try {
             $request->validate([
@@ -23,7 +23,7 @@ class AuthController extends Controller
                     'string',
                     'min:8',
                     'confirmed',
-                    // 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
+                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
                 ],
                 
             ]);

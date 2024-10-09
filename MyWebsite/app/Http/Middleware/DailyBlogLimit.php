@@ -11,8 +11,7 @@ class DailyBlogLimit
 {
     public function handle($request, Closure $next): mixed
     {
-        // $maxDailyBlogs = 5;
-        $maxDailyBlogs = 50;
+        $maxDailyBlogs = 5;
         $user = Auth::user();
         $blogsTodayCount = Blog::where('user_id', $user->id)
             ->whereDate('created_at', Carbon::today())

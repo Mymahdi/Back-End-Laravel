@@ -7,6 +7,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TagController;
 use App\Http\Middleware\RateLimitPublishing;
 
 
@@ -21,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware(RateLimitPublishing::class);
     
     Route::get('/blog-likers/{id}', [BlogController::class, 'getLikersInfo']);
+    Route::get('/tags-list', [TagController::class, 'tagsList']);
 
     Route::get('/user/Notifications', [NotificationController::class, 'getUserNotifications']);
 
@@ -33,9 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/like/{type}/{id}', [BlogController::class, 'likeItem']);
     Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeItem']);
-
+    
     Route::get('/serach-blog', [BlogController::class, 'searchBlogs']);
-
+    
     Route::get('/downlaod-all-blogs', [AdminController::class, 'exportAllBlogs'])->middleware('admin');
     Route::get('/excels-list', [AdminController::class, 'listExports'])->middleware('admin');
     Route::get('/exports/download/{filename}', [AdminController::class, 'download'])->name('exports.download')->middleware('admin');
@@ -44,9 +46,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::delete('/logout', [AuthController::class, 'logout']);
 });
-
-
-//     Route::get('/tags-list', [BlogController::class, 'getTagsList']);
 
 
 Route::fallback(function () {

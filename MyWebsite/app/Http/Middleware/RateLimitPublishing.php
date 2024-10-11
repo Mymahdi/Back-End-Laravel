@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\RateLimiter;
 
 class RateLimitPublishing
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         $key = 'publish_' . $request->user()->id;
 

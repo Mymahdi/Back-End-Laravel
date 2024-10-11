@@ -55,9 +55,6 @@ class Like extends Model
             ->where('likeable_type', $likeableType)
             ->where('user_id', Auth::id())
             ->first();
-            if ($likedBlog == false) {
-                return ['message' => "You have not liked this item."];
-            }
             
             $likedBlog->delete();
             return ['message' => 'Successfully unliked.'];

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\Like;
+use App\Models\Notification;
+use App\Models\Tag;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\PublishBlog;
 use Illuminate\Http\Request;
@@ -11,8 +13,6 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EditBlogRequest;
-use App\Models\Notification;
-use App\Models\Tag;
 use Illuminate\Console\View\Components\Factory;
 use Illuminate\Contracts\View\View;
 
@@ -136,7 +136,7 @@ public function deletePost(Request $request, int $id): JsonResponse
         return response()->json($userBlogs);
     }
 
-    public function likeBlog(string $type,int $id): JsonResponse
+    public function likeItem(string $type,int $id): JsonResponse
     {
         $modelClass = 'App\\Models\\' . ucfirst($type);
         if (!class_exists($modelClass)) {
@@ -145,7 +145,7 @@ public function deletePost(Request $request, int $id): JsonResponse
         
         $item = app($modelClass)->find($id);
         if ($item == null) {
-            return response()->json(['error' => 'Blog not found.'], 404);
+            return response()->json(['error' => "$type not found."], 404);
         }
         $likeResult = Like::like(likeableType: $modelClass, likeableId: $id);
 
@@ -156,7 +156,7 @@ public function deletePost(Request $request, int $id): JsonResponse
         return response()->json(['message' => "$type liked successfully."]);
     }
 
-    public function unlikeBlog(string $type,int $id): JsonResponse
+    public function unlikeItem(string $type,int $id): JsonResponse
 {
     $modelClass = 'App\\Models\\' . ucfirst($type);
     if (!class_exists($modelClass)) {
@@ -167,7 +167,6 @@ public function deletePost(Request $request, int $id): JsonResponse
     if ($item == null) {
         return response()->json(['error' => "$type not found."], 404);
     }
-
     $unlikeResult = Like::unlike(likeableType: $modelClass, likeableId: $id);
 
     if (isset($unlikeResult['message'])) {
@@ -175,6 +174,22 @@ public function deletePost(Request $request, int $id): JsonResponse
     }
 
     return response()->json(['message' => 'Blog unliked successfully.']);
+}
+
+public function searchBlogs(Request $request)
+{
+    $title = $request->title;
+    $body = $request->input('body');
+    $authorName = $request->input('authorName');
+    $blogs = Blog::search($title, $body, $authorName);
+    return response()->json($blogs);
+}
+
+public function getLikersInfo($blogId)
+{
+    $blog = Blog::findOrFail($blogId);
+    $likersInfo = $blog->getLikersInfo();
+    return response()->json($likersInfo);
 }
 
 }

@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'daily.blog.limit' => \App\Http\Middleware\DailyBlogLimit::class,
+            'rate.limit.publishing' => \App\Http\Middleware\RateLimitPublishing::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
     })

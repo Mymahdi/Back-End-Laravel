@@ -17,11 +17,9 @@ use Illuminate\Support\Facades\Mail;
 
 // Routes that require Sanctum authentication
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/blogs', [BlogController::class, 'index']);
     Route::post('comment-blog/{id}', [CommentController::class, 'addCommentToBlog']);
 
     Route::post('/create-blog', [BlogController::class, 'create']);
-    // Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware('daily.blog.limit');
     Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware(RateLimitPublishing::class);
 
 
@@ -34,18 +32,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/show-all-posts', [BlogController::class, 'showAllBlogs']);
     Route::get('/show-user-posts', [BlogController::class, 'showUserBlogs']);
 
-    Route::post('/like/{type}/{id}', [BlogController::class, 'likeBlog']);
-    Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeBlog']);
+    Route::post('/like/{type}/{id}', [BlogController::class, 'likeItem']);
+    Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeItem']);
 
-    Route::post('/like/{type}/{id}', [BlogController::class, 'likeBlog']);
-    Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeBlog']);
+    // Route::post('/like/{type}/{id}', [BlogController::class, 'likeBlog']);
+    // Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeBlog']);
 
     Route::get('/downlaod-all-blogs', [AdminController::class, 'exportAllBlogs'])->middleware('admin');
     Route::get('/excels-list', [AdminController::class, 'listExports'])->middleware('admin');
     Route::get('/exports/download/{filename}', [AdminController::class, 'download'])->name('exports.download')->middleware('admin');
     Route::get('/export-weekly-blogs', [AdminController::class, 'downloadWeeklyExport'])->middleware('admin');
     
-    Route::get('/show-categories', [CategoryController::class, 'getCategories']);
+    Route::get('/blogs-by-category', [CategoryController::class, 'getCategories']);
 
     Route::delete('/logout', [AuthController::class, 'logout']);
 });

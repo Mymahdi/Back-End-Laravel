@@ -136,7 +136,7 @@ public function deletePost(Request $request, int $id): JsonResponse
         return response()->json($userBlogs);
     }
 
-    public function likeBlog(string $type,int $id): JsonResponse
+    public function likeItem(string $type,int $id): JsonResponse
     {
         $modelClass = 'App\\Models\\' . ucfirst($type);
         if (!class_exists($modelClass)) {
@@ -145,7 +145,7 @@ public function deletePost(Request $request, int $id): JsonResponse
         
         $item = app($modelClass)->find($id);
         if ($item == null) {
-            return response()->json(['error' => 'Blog not found.'], 404);
+            return response()->json(['error' => "$type not found."], 404);
         }
         $likeResult = Like::like(likeableType: $modelClass, likeableId: $id);
 
@@ -156,7 +156,7 @@ public function deletePost(Request $request, int $id): JsonResponse
         return response()->json(['message' => "$type liked successfully."]);
     }
 
-    public function unlikeBlog(string $type,int $id): JsonResponse
+    public function unlikeItem(string $type,int $id): JsonResponse
 {
     $modelClass = 'App\\Models\\' . ucfirst($type);
     if (!class_exists($modelClass)) {
@@ -167,7 +167,6 @@ public function deletePost(Request $request, int $id): JsonResponse
     if ($item == null) {
         return response()->json(['error' => "$type not found."], 404);
     }
-
     $unlikeResult = Like::unlike(likeableType: $modelClass, likeableId: $id);
 
     if (isset($unlikeResult['message'])) {

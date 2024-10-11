@@ -176,4 +176,13 @@ public function deletePost(Request $request, int $id): JsonResponse
     return response()->json(['message' => 'Blog unliked successfully.']);
 }
 
+public function searchBlogs(Request $request)
+{
+    $title = $request->title;
+    $body = $request->input('body');
+    $authorName = $request->input('authorName');
+    $blogs = Blog::search($title, $body, $authorName);
+    return response()->json($blogs);
+}
+
 }

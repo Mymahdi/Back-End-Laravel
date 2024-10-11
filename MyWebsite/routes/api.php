@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/like/{type}/{id}', [BlogController::class, 'likeItem']);
     Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeItem']);
+    Route::get('/serach-blog', [BlogController::class, 'searchBlogs']);
 
     // Route::post('/like/{type}/{id}', [BlogController::class, 'likeBlog']);
     // Route::delete('/unlike/{type}/{id}', [BlogController::class, 'unlikeBlog']);
@@ -60,7 +61,6 @@ Route::post('/register', [AuthController::class, 'register']);
 //     Route::get('/blog-likers/{id}', [BlogController::class, 'getLikers']);
 //     Route::get('/tags-list', [BlogController::class, 'getTagsList']);
 
-//     Route::get('/serach-blog', [BlogController::class, 'searchBlogs']);
     
 // });
 Route::fallback(function () {

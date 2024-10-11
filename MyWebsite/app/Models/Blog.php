@@ -97,6 +97,24 @@ class Blog extends Model
     }
 
 
+
+    public static function search($title = null, $body = null, $authorName = null)
+    {
+        return self::query()
+        ->where('is_published', 1)
+        ->when($title, function ($query, $title) {
+            $query->orWhere('title', 'like', '%' . $title . '%');
+        })
+        ->when($body, function ($query, $body) {
+            $query->orWhere('body', 'like', '%' . $body . '%');
+        })
+        ->when($authorName, function ($query, $authorName) {
+            $query->orWhere('author_name', 'like', '%' . $authorName . '%');
+        })
+        ->get(['id', 'title', 'body', 'author_name']);
+    }
+    
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'tags_blogs', 'blog_id', 'tag_id');

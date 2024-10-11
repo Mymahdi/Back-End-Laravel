@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Blog::class);
     }
+
+    public function likes()
+{
+    return $this->morphMany(Like::class, 'likeable');
+}
 }

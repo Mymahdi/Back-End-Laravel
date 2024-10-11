@@ -98,7 +98,7 @@ class Blog extends Model
 
 
 
-    public static function search($title = null, $body = null, $authorName = null)
+    public static function search($title = null, $body = null, $authorName = null): Collection
     {
         return self::query()
         ->where('is_published', 1)
@@ -113,7 +113,12 @@ class Blog extends Model
         })
         ->get(['id', 'title', 'body', 'author_name']);
     }
-    
+
+    public function getLikersInfo(): mixed
+    {
+        return $this->likers()->get(['first_name', 'last_name', 'role']);
+    }
+
 
     public function tags(): BelongsToMany
     {
@@ -132,4 +137,9 @@ class Blog extends Model
     {
         return $this->morphMany(Like::class, 'likeable');
     }
+    public function likers()
+{
+    return $this->hasManyThrough(User::class, Like::class, 'likeable_id', 'id', 'id', 'user_id')
+                ->where('likeable_type', Blog::class);
+}
 }

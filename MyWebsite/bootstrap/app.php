@@ -14,7 +14,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'rate.limit.publishing' => \App\Http\Middleware\RateLimitPublishing::class,
-            'daily.blog.limit' => \App\Http\Middleware\DailyBlogLimit::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
     })

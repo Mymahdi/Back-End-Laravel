@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\Like;
+use App\Models\Notification;
+use App\Models\Tag;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\PublishBlog;
 use Illuminate\Http\Request;
@@ -11,8 +13,6 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateBlogRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\EditBlogRequest;
-use App\Models\Notification;
-use App\Models\Tag;
 use Illuminate\Console\View\Components\Factory;
 use Illuminate\Contracts\View\View;
 
@@ -183,6 +183,13 @@ public function searchBlogs(Request $request)
     $authorName = $request->input('authorName');
     $blogs = Blog::search($title, $body, $authorName);
     return response()->json($blogs);
+}
+
+public function getLikersInfo($blogId)
+{
+    $blog = Blog::findOrFail($blogId);
+    $likersInfo = $blog->getLikersInfo();
+    return response()->json($likersInfo);
 }
 
 }

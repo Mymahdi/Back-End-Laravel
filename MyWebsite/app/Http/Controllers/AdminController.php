@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exports\BlogsExport;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -50,5 +52,13 @@ class AdminController extends Controller
             return response()->json(['error' => 'File not found'], 404);
         }
         return Storage::download($filePath);
+    }
+
+    public function changeUserRole($userId): JsonResponse
+    {
+        $user = User::findOrFail($userId);
+        $user->role = 'author';
+        $user->save();
+        return response()->json(['success' => 'User role changed to author'], 200);
     }
 }

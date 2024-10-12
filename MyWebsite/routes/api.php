@@ -41,7 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/downlaod-all-blogs', [AdminController::class, 'exportAllBlogs'])->middleware('admin');
     Route::get('/excels-list', [AdminController::class, 'listExports'])->middleware('admin');
     Route::get('/exports/download/{filename}', [AdminController::class, 'download'])->name('exports.download')->middleware('admin');
-    
+    Route::put('/admin/change-role/{userId}', [AdminController::class, 'changeUserRole'])->middleware('admin');
+
     Route::get('/blogs-by-category', [CategoryController::class, 'getCategories']);
 
     Route::delete('/logout', [AuthController::class, 'logout']);

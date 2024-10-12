@@ -17,7 +17,8 @@ Route::post('/register', [AuthController::class, 'register']);
 // Routes that require Sanctum authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('comment-blog/{id}', [CommentController::class, 'addCommentToBlog']);
-    
+    Route::post('/reply-comments/{commentId}', [CommentController::class, 'addCommentReply']);
+
     Route::post('/create-blog', [BlogController::class, 'create']);
     Route::post('/publish-blog/{id}', [BlogController::class, 'publish'])->middleware(RateLimitPublishing::class);
     

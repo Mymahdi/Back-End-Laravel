@@ -12,13 +12,10 @@ class CommentController extends Controller
 {
     public function addCommentToBlog(Request $request, $blogId): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'comment' => 'required|string|max:1000|min:3',
         ]);
         
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
         $blog = Blog::findOrFail($blogId);
         
         $userId = Auth::id();
@@ -31,4 +28,25 @@ class CommentController extends Controller
 
         return response()->json(['message' => 'Comment added successfully'], 201);
     }
+
+    public function addCommentReply(Request $request, int $commentId): JsonResponse
+    {
+        $request->validate([
+            'body' => 'required|string|max:1000|min:3',
+        ]);
+    
+        $user = Auth::user();
+        $parentComment = Comment::findOrFail($commentId);
+    
+        $replyComment = new Comment();
+        $replyComment->body = $request->body;
+        $replyComment->user_id = $user->id;
+        $replyComment->commentable_id = $parentComment->id;
+        $replyComment->commentable_type = Comment::class;
+        $replyComment->save();
+    
+        return response()->json(['message' => 'Reply added successfully.', 'comment' => $replyComment], 201);
+    }
+    
+
 }

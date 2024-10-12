@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -36,38 +37,41 @@ class Blog extends Model
             $model->updated_at = null;
         });
     }
-
-    public static function getAllBlogsWithFormattedData(): Collection
+    
+    public static function getAllBlogsWithFormattedData(int $perPage = 10): LengthAwarePaginator
     {
         $allBlogs = self::with([
-            'author',
-            'comments' => function ($query) {
-                $query->select('id', 'body', 'commentable_id', 'user_id', 'created_at')
-                      ->withCount('likes');
-            }
-        ])
-        ->withCount('likes')
-        ->select('id', 'title', 'body', 'user_id')
-        ->get();
+                'author',
+                'comments' => function ($query) {
+                    $query->select('id', 'body', 'commentable_id', 'user_id', 'created_at')
+                        ->withCount('likes');
+                }
+            ])
+            ->withCount('likes')
+            ->select('id', 'title', 'body', 'user_id')
+            ->paginate($perPage);
+
         $authenticatedUserId = Auth::id();
-        return $allBlogs->map(function (Blog $post) use ($authenticatedUserId): array {
+
+        $allBlogs->getCollection()->transform(function (Blog $post) use ($authenticatedUserId): array {
             return [
                 'title' => $post->title,
                 'body' => $post->body,
                 'author_name' => $post->author->first_name . ' ' . $post->author->last_name,
-                'like_status' => $post->likes->contains('user_id', $authenticatedUserId)?"Liked":"Not Liked",  
+                'like_status' => $post->likes->contains('user_id', $authenticatedUserId) ? "Liked" : "Not Liked",  
                 'likes_count' => $post->likes()->count(),
                 'comments' => $post->comments->map(function ($comment) use ($authenticatedUserId) {
                     return [
                         'comment_body' => $comment->body,
                         'user_name' => $comment->user->first_name . ' ' . $comment->user->last_name, 
-                        'like_status' => $comment->likes->contains('user_id', $authenticatedUserId)?"Liked":"Not Liked",
-                        'likes_count' =>$comment->likes()->count(),
+                        'like_status' => $comment->likes->contains('user_id', $authenticatedUserId) ? "Liked" : "Not Liked",
+                        'likes_count' => $comment->likes()->count(),
                     ];
                 }),
             ];
         });
-        
+
+        return $allBlogs;
     }
 
     public static function userBlogs(): Collection

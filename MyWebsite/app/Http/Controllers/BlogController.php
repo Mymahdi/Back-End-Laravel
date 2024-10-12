@@ -120,15 +120,16 @@ class BlogController extends Controller
     }
 
 
-    public function showAllBlogs(): JsonResponse
+    public function showAllBlogs(Request $request): JsonResponse
     {
-        $postsData = Blog::getAllBlogsWithFormattedData();
+        $perPage = $request->get('per_page', default: 3);
+        $postsData = Blog::getAllBlogsWithFormattedData($perPage);
         if ($postsData->isEmpty()) {
             return response()->json(['message' => 'No posts found.'], 404);
         }
-
         return response()->json($postsData, 200);
     }
+    
 
     public function showUserBlogs(): JsonResponse
     {

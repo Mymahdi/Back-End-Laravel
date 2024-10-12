@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "2d31fd29-edeb-4945-a9d4-5833e4cd4e64",
-		"name": "Website",
+		"_postman_id": "49434b3f-d9d6-4ba5-83dc-4aba23766a08",
+		"name": "Website Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "38420696"
 	},
@@ -12,22 +12,26 @@
 				{
 					"name": "Show-All-Posts",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "wNLq2W12fXxOM9AkjiqriOw5rT1friA52MLi2drVe89e97e7",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer 1cbf48218fb4ddbbfdf4",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/api/all-posts",
+							"raw": "{{BaseUrl}}/api/show-all-posts",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
 								"api",
-								"all-posts"
+								"show-all-posts"
 							]
 						}
 					},
@@ -36,126 +40,26 @@
 				{
 					"name": "Show-User-Posts",
 					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer 1cbf48218fb4ddbbfdf4",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{BaseUrl}}/api/user-posts",
-							"host": [
-								"{{BaseUrl}}"
-							],
-							"path": [
-								"api",
-								"user-posts"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Export-All-Blogs",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true,
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer cdaf199b3d693d21da25",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "{{BaseUrl}}/api/export-blogs",
-							"host": [
-								"{{BaseUrl}}"
-							],
-							"path": [
-								"api",
-								"export-blogs"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Excels-List",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true,
-						"disabledSystemHeaders": {}
-					},
-					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "piRWu9kRljJu0U1u9tj6UBc5cGaoAWmQSgD9ThJu69ce62a7",
+									"value": "Dvv7nicq07X406kRczcPX8IqDAuaj7hU829DFCWb51927199",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
 						"url": {
-							"raw": "{{BaseUrl}}/api/exports",
+							"raw": "{{BaseUrl}}/api/show-user-posts",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
 								"api",
-								"exports"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Export-Weekly-Blogs",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true,
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "piRWu9kRljJu0U1u9tj6UBc5cGaoAWmQSgD9ThJu69ce62a7",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "{{BaseUrl}}/api/export-blogs",
-							"host": [
-								"{{BaseUrl}}"
-							],
-							"path": [
-								"api",
-								"export-blogs"
+								"show-user-posts"
 							]
 						}
 					},
@@ -164,23 +68,27 @@
 				{
 					"name": "List-Of-Likers",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "wNLq2W12fXxOM9AkjiqriOw5rT1friA52MLi2drVe89e97e7",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer cdaf199b3d693d21da25",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/api/blog-likers/88",
+							"raw": "{{BaseUrl}}/api/blog-likers/22",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
 								"api",
 								"blog-likers",
-								"88"
+								"22"
 							]
 						}
 					},
@@ -189,14 +97,18 @@
 				{
 					"name": "Tags-List",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "wNLq2W12fXxOM9AkjiqriOw5rT1friA52MLi2drVe89e97e7",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer cdaf199b3d693d21da25",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{BaseUrl}}/api/tags-list",
 							"host": [
@@ -333,6 +245,48 @@
 					"response": []
 				},
 				{
+					"name": "Search-Blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "Dvv7nicq07X406kRczcPX8IqDAuaj7hU829DFCWb51927199",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/serach-blog?title=title&body=body&authorName=author",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"serach-blog"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "title"
+								},
+								{
+									"key": "body",
+									"value": "body"
+								},
+								{
+									"key": "authorName",
+									"value": "author"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Add-Comment-Blog",
 					"request": {
 						"auth": {
@@ -340,22 +294,71 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "GETcTb5YYBoY2yziwILBwrPEwpU5ckU42ekrFzLedc563f76",
+									"value": "Dvv7nicq07X406kRczcPX8IqDAuaj7hU829DFCWb51927199",
 									"type": "string"
 								}
 							]
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "comment",
+									"value": "thsx",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": "{{BaseUrl}}/api/comment-blog/5",
+							"raw": "{{BaseUrl}}/api/comment-blog/40",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
 								"api",
 								"comment-blog",
-								"5"
+								"40"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add-Comment-Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "Dvv7nicq07X406kRczcPX8IqDAuaj7hU829DFCWb51927199",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "body",
+									"value": "123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/reply-comments/4",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"reply-comments",
+								"4"
 							]
 						}
 					},
@@ -369,7 +372,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "TggDPOmzPNNe1MWqVR4G4xAmP0qpT34ZqnvZOMkxb6c8a35d",
+									"value": "wNLq2W12fXxOM9AkjiqriOw5rT1friA52MLi2drVe89e97e7",
 									"type": "string"
 								}
 							]
@@ -432,7 +435,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "TggDPOmzPNNe1MWqVR4G4xAmP0qpT34ZqnvZOMkxb6c8a35d",
+									"value": "Dvv7nicq07X406kRczcPX8IqDAuaj7hU829DFCWb51927199",
 									"type": "string"
 								}
 							]
@@ -443,45 +446,21 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "title",
-									"value": "salam",
-									"type": "text"
-								},
-								{
-									"key": "body",
-									"value": "hooman body",
-									"type": "text"
-								},
-								{
-									"key": "tags[]",
-									"value": "hasan",
-									"type": "text"
-								},
-								{
-									"key": "tags[]",
-									"value": "lone",
-									"type": "text"
-								},
-								{
-									"key": "tags[]",
-									"value": "salam",
-									"type": "text"
-								},
-								{
 									"key": "publish_at",
-									"value": "2024-10-05 02:30:00",
+									"value": "2024-10-16 02:30:00",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{BaseUrl}}/api/create-blog",
+							"raw": "{{BaseUrl}}/api/publish-blog/45",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
 								"api",
-								"create-blog"
+								"publish-blog",
+								"45"
 							]
 						}
 					},
@@ -507,7 +486,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "8oYav4gwzPjGtP8oL5YPK7azOoGjk7gJO9Fu6sE5b05ae260",
+									"value": "wNLq2W12fXxOM9AkjiqriOw5rT1friA52MLi2drVe89e97e7",
 									"type": "string"
 								}
 							]
@@ -528,15 +507,9 @@
 									"type": "text"
 								},
 								{
-									"key": "publish_at",
-									"value": "2025-12-05 03:22:30",
-									"type": "text"
-								},
-								{
 									"key": "tags[]",
 									"value": "salam",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "tags[]",
@@ -546,14 +519,14 @@
 							]
 						},
 						"url": {
-							"raw": "{{BaseUrl}}/api/edit-blog/2",
+							"raw": "{{BaseUrl}}/api/edit-blog/40",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
 								"api",
 								"edit-blog",
-								"2"
+								"40"
 							]
 						}
 					},
@@ -562,23 +535,28 @@
 				{
 					"name": "Like-Blog",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "oS2vDGKqGXlMFNlQtNemhXhgWo472n77hODBsIrCeb427520",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer 1cbf48218fb4ddbbfdf4",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/api/like-blog/88",
+							"raw": "{{BaseUrl}}/api/like/blog/44",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
 								"api",
-								"like-blog",
-								"88"
+								"like",
+								"blog",
+								"44"
 							]
 						}
 					},
@@ -592,7 +570,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "3kBZhGDQnbdbxnDIsuxeLC1Go4R4j3OVQl8dqyemea2516a7",
+									"value": "Dvv7nicq07X406kRczcPX8IqDAuaj7hU829DFCWb51927199",
 									"type": "string"
 								}
 							]
@@ -600,14 +578,15 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/like/comment/2",
+							"raw": "{{BaseUrl}}/api/like/comment/4",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
+								"api",
 								"like",
 								"comment",
-								"2"
+								"4"
 							]
 						}
 					},
@@ -616,6 +595,16 @@
 				{
 					"name": "Unlike-Blog",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "Dvv7nicq07X406kRczcPX8IqDAuaj7hU829DFCWb51927199",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [
 							{
@@ -625,14 +614,15 @@
 							}
 						],
 						"url": {
-							"raw": "{{BaseUrl}}/unlike/blog/1",
+							"raw": "{{BaseUrl}}/api/unlike/blog/45",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
+								"api",
 								"unlike",
 								"blog",
-								"1"
+								"45"
 							]
 						}
 					},
@@ -641,23 +631,28 @@
 				{
 					"name": "Unlike-Comment",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "Dvv7nicq07X406kRczcPX8IqDAuaj7hU829DFCWb51927199",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer cd5ac473abe921bdc23f",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/unlike/comment/1",
+							"raw": "{{BaseUrl}}/api/unlike/comment/40",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
+								"api",
 								"unlike",
 								"comment",
-								"1"
+								"40"
 							]
 						}
 					},
@@ -671,7 +666,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "yvkOYPU0IUO7aTlc1tc706EKhMIXXIfqL2JhZ4O66b52b2b7",
+									"value": "Dvv7nicq07X406kRczcPX8IqDAuaj7hU829DFCWb51927199",
 									"type": "string"
 								}
 							]
@@ -679,93 +674,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/api/delete-blog/1",
+							"raw": "{{BaseUrl}}/api/delete-blog/45",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
 								"api",
 								"delete-blog",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Search-Blog",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer 040b0686bdf598e589de",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "title",
-									"value": "title",
-									"type": "text"
-								},
-								{
-									"key": "body",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "authorName",
-									"value": "",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{BaseUrl}}/api/serach-blog?title=title&body=body&authorName=author",
-							"host": [
-								"{{BaseUrl}}"
-							],
-							"path": [
-								"api",
-								"serach-blog"
-							],
-							"query": [
-								{
-									"key": "title",
-									"value": "title"
-								},
-								{
-									"key": "body",
-									"value": "body"
-								},
-								{
-									"key": "authorName",
-									"value": "author"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Test-Exporting",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{BaseUrl}}/api/test-job",
-							"host": [
-								"{{BaseUrl}}"
-							],
-							"path": [
-								"api",
-								"test-job"
+								"45"
 							]
 						}
 					},
@@ -804,12 +720,12 @@
 								},
 								{
 									"key": "password",
-									"value": "12345678",
+									"value": "12345678Qd!",
 									"type": "text"
 								},
 								{
 									"key": "password_confirmation",
-									"value": "12345678",
+									"value": "12345678Qd!",
 									"type": "text"
 								}
 							]
@@ -841,7 +757,7 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "mahdi@gmail.com",
+									"value": "henry15ronaldo79carlo1@gmail.com",
 									"type": "text"
 								},
 								{
@@ -867,6 +783,16 @@
 				{
 					"name": "Logout",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "oS2vDGKqGXlMFNlQtNemhXhgWo472n77hODBsIrCeb427520",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [
 							{
@@ -883,6 +809,190 @@
 							"path": [
 								"api",
 								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Panel",
+			"item": [
+				{
+					"name": "Export-All-Blogs",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "oS2vDGKqGXlMFNlQtNemhXhgWo472n77hODBsIrCeb427520",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer cdaf199b3d693d21da25",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BaseUrl}}/api/downlaod-all-blogs",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"downlaod-all-blogs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excels-List",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "oS2vDGKqGXlMFNlQtNemhXhgWo472n77hODBsIrCeb427520",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/excels-list",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"excels-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Export-Weekly-Blogs",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "oS2vDGKqGXlMFNlQtNemhXhgWo472n77hODBsIrCeb427520",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/exports/download/{filename}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"exports",
+								"download",
+								"{filename}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle-User-Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "oS2vDGKqGXlMFNlQtNemhXhgWo472n77hODBsIrCeb427520",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "tt",
+									"type": "text"
+								},
+								{
+									"key": "body",
+									"value": "body",
+									"type": "text"
+								},
+								{
+									"key": "publish_at",
+									"value": "2025-12-05 03:22:30",
+									"type": "text"
+								},
+								{
+									"key": "tags[]",
+									"value": "salam",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "tags[]",
+									"value": "hero",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/admin/change-role/2",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"change-role",
+								"2"
 							]
 						}
 					},

@@ -103,18 +103,20 @@ class BlogController extends Controller
     }
 
 
-    public function deletePost(Request $request, int $id): JsonResponse
+    public function deletePost(Request $request, int $blogId): JsonResponse
     {
         $request->validate([
             'id' => 'integer'
         ]);
+    
         $user = Auth::user();
-        $blog = Blog::where('id', $id)
-            ->where('user_id', $user->id)
-            ->first();
-
-        $blog->delete();
-        return response()->json(['message' => 'Post deleted successfully.']);
+        $blog = Blog::findOrFail($blogId);
+        if ($user->role === 'admin' || $blog->user_id === $user->id) {
+            $blog->delete();
+            return response()->json(['message' => 'Post deleted successfully.'], 200);
+        } else {
+            return response()->json(['error' => 'You do not have permission to delete this post.'], 403);
+        }
     }
 
 

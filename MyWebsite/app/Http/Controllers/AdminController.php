@@ -57,8 +57,20 @@ class AdminController extends Controller
     public function changeUserRole($userId): JsonResponse
     {
         $user = User::findOrFail($userId);
-        $user->role = 'author';
+    
+        if ($user->role === 'user') {
+            $user->role = 'author';
+            $message = 'User role changed to author';
+        } elseif ($user->role === 'author') {
+            $user->role = 'user';
+            $message = 'User role changed to user';
+        } else {
+            return response()->json(['error' => 'Invalid role for toggling.'], 400);
+        }
+    
         $user->save();
-        return response()->json(['success' => 'User role changed to author'], 200);
+    
+        return response()->json(['success' => $message], 200);
     }
+    
 }

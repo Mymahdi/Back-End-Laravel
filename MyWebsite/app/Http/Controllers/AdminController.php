@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\BlogsExport;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
@@ -51,4 +52,24 @@ class AdminController extends Controller
         }
         return Storage::download($filePath);
     }
+
+    public function changeUserRole($userId): JsonResponse
+    {
+        $user = User::findOrFail($userId);
+    
+        if ($user->role === 'user') {
+            $user->role = 'author';
+            $message = 'User role changed to author';
+        } elseif ($user->role === 'author') {
+            $user->role = 'user';
+            $message = 'User role changed to user';
+        } else {
+            return response()->json(['error' => 'Invalid role for toggling.'], 400);
+        }
+    
+        $user->save();
+    
+        return response()->json(['success' => $message], 200);
+    }
+    
 }

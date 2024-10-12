@@ -12,12 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tags_blogs', function (Blueprint $table) {
-            // $table->id();
             $table->foreignId("tag_id")->constrained()->onDelete('cascade');
             $table->foreignId("blog_id")->constrained()->onDelete('cascade');
-            // $table->unsignedBigInteger('tag_id');
-            // $table->unsignedBigInteger('blog_id');
-            // $table->timestamp('created_at')->useCurrent();
         });
     }
 
